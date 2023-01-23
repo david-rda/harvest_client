@@ -1,0 +1,426 @@
+@charset "UTF-8"; @import "./variables.scss"; html, body {
+    background-color: $bg;
+    font-family: "frutiger_light";
+}
+
+h6 {
+    font-family: frutiger_bold_caps;
+}
+
+.app-form .form-input label {
+    font-family: 'frutiger_light_caps';
+    font-size: 13px;
+    color: black;
+    font-weight: bold;
+}
+
+.app-form .form-input input, .app-form .form-input select, .app-form .form-input textarea {
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0s linear;
+}
+
+.app-table .btn {
+    font-family: 'frutiger_light_caps';
+    padding: 5px 10px;
+}
+
+[data-td-item="date"] {
+    font-size: 12px;
+    color: #8d8d8d;
+}
+
+.app-td-list {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    margin: 0px 5px;
+}
+
+.app-td-list span {
+    margin: 2px;
+}
+
+.btn-custom {
+    background: #ff9900;
+    border-color: #ff9900;
+    color: white;
+}
+
+.app-popup-contaner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0000001a;
+    backdrop-filter: blur(7px);
+    display: block;
+    overflow-y: scroll;
+}
+
+.app-popup {
+    width: 700px;
+    max-height: 80vh;
+    background: white;
+    display: table;
+    vertical-align: middle;
+    margin: 100px auto;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.btn-custom:hover {
+    background: #df9526;
+    border-color: #df9526;
+    color: white;
+}
+
+.app-table-uid {
+    font-size: 14px;
+}
+
+.slide-fade-enter-from, .slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
+footer {
+    border-top: 1px solid #ddd;
+}
+
+.app-form .form-input[data-error="true"] input {
+    border: 1px solid #dc3545;
+}
+
+.app-form button[type="submit"] {
+    font-family: 'frutiger_light_caps';
+    padding: 10px;
+}
+
+.card-img-top {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+.app-table .btn {
+    font-family: 'frutiger_light_caps';
+    padding: 5px 10px;
+    margin: 6px 0px 6px 10px;
+}
+
+.app-table table th {
+    font-family: 'frutiger_bold_caps';
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+.app-table-id {
+    width: 60px;
+    border-right: 1px solid #ddd;
+    text-align: center;
+}
+
+.cards {
+    font-size: 14px;
+    margin: 5px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 30px #00000012;
+}
+
+.app-info-table table {
+    font-size: 13px;
+}
+
+.app-info-table table td {
+    padding: 12px!important;
+}
+
+.app-info-table table td:first-child {
+    font-family: 'frutiger_light_caps';
+    font-weight: bold;
+    width: 300px;
+}
+
+.list-group-item {
+    border-color: #eee;
+}
+
+.list-group-item {
+    border-color: #eee;
+}
+
+.card-text {
+    font-size: 17px;
+    font-family: 'frutiger_light_caps';
+}
+
+.card a {
+    font-family: 'frutiger_bold_caps';
+    font-size: 14px;
+}
+
+.app-form .form-input[data-error="true"] input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem #dc354540;
+}
+
+.loading {
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    overflow: hidden;
+    background-color: #ddd;
+    z-index: 1;
+    left: 0;
+    top: 100%;
+}
+
+.loading:before {
+    content: "";
+    position: absolute;
+    left: -50%;
+    height: 1px;
+    width: 40%;
+    background-color: $darkgreen;
+    animation: loading 1s linear infinite;
+}
+
+body {
+    height: 100vh;
+}
+
+#app {
+    z-index: 2;
+    position: relative;
+}
+
+@keyframes loading {
+    0% {
+        left: -40%;
+    }
+
+    50% {
+        left: 20%;
+        width: 80%;
+    }
+
+    100% {
+        left: 100%;
+        width: 100%;
+    }
+}
+
+aside {
+    margin: 0 0 35px 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
+header {
+    border-bottom: 1px solid #ddd;
+    padding: 35px 35px 25px 35px;
+}
+
+header h3 {
+    font-family: 'frutiger_bold_caps';
+}
+
+aside .app-page-title {
+    font-family: 'frutiger_light_caps';
+    margin: 20px 15px;
+    border-bottom: 1px solid darkgreen;
+    display: inline-block;
+    font-size: 22px;
+    padding: 10px 20px 10px 0;
+}
+
+.side-nav ul li:not(:last-child) {
+    border-bottom: 1px solid #ddd;
+}
+
+.side-nav ul {
+    margin: 0;
+    font-family: 'frutiger_light_caps';
+    list-style: none;
+    border-top: 1px solid #ddd;
+}
+
+.side-nav ul li a {
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    color: black;
+    font-size: 14px;
+}
+
+main {
+    border-radius: 6px;
+}
+
+.side-nav {
+    width: 300px;
+    border-right: 1px solid #ddd;
+    text-align: right;
+}
+
+.side-logo {
+    display: block;
+    padding: 60px;
+}
+
+.side-logo img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+
+.side-nav .router-link-active {
+    color: black;
+    font-weight: bold;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+.app-form {
+    padding: 15px;
+}
+
+.form-item {
+    position: relative;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    background: white;
+    padding: 0px 20px 20px 20px;
+    margin: 30px 0 0 0;
+}
+
+.form-item .btn {
+    font-family: 'frutiger_bold_caps';
+    font-size: 12px;
+}
+
+.form-item[data-index]:before {
+    content: '#'attr(data-index);
+    font-size: 30px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.form-item[data-index]:before {
+    content: '#'attr(data-index);
+    font-size: 30px;
+    font-weight: bold;
+    font-family: sans-serif;
+    left: calc(100% + 38px);
+    position: absolute;
+    color: #545454;
+    text-shadow: 1px 1px #fff;
+}
+
+.app-form-items {
+    padding-right: 70px;
+}
+
+.form-item[data-index]:after {
+    position: absolute;
+}
+
+.form-input .alert {
+    margin-bottom: 0;
+}
+
+.form-item[data-index]:after {
+    content: "";
+    position: absolute;
+    top: 80px;
+    left: calc(100% + 53px);
+    width: 1px;
+    height: calc(100% - 60px);
+    background: linear-gradient(45deg, transparent, #a7a7a7);
+}
+
+.app-form h6 {
+    position: relative;
+}
+
+.app-documents h6 {
+    position: relative;
+}
+
+.app-documents h6:before,
+.app-form h6:before {
+    content: "";
+    height: 3px;
+    width: 50px;
+    background: #82bd00;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+}
+
+.form-item .btn[disabled="true"] {
+    pointer-events: none;
+    background: #c4c4c4;
+    border-color: #c4c4c4;
+}
+
+.app-single-button {
+    font-family: sans-serif, 'frutiger_bold_caps';
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 100%;
+}
+
+.alert {
+    font-size: 13px;
+    padding: 10px 15px;
+}
+
+.app-calculator strong {
+    font-family: 'frutiger_light_caps';
+    font-weight: normal;
+    color: black;
+}
+
+.app-calculator {
+    padding: 0;
+    margin: 0px;
+    list-style: none;
+}
+
+.app-form-submit-button {
+    font-family: 'frutiger_bold_caps';
+    padding: 10px 15px;
+    width: 100%;
+}
+
+.alert ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-calculator li {
+    margin: 21px 10px;
+    color: darkgreen;
+    font-weight: bold;
+}
