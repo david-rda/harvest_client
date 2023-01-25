@@ -83,7 +83,7 @@
 
             <div class="row" v-if="engine">
                 <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.data[item.index].hp.error.length">
-                    <label class="mb-2">ძრავის სიმზლავრე (ცხ/ძ - მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)</label>
+                    <label class="mb-2">ძრავის სიმძლავრე (ცხ/ძ - მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)</label>
                     <input type="text" class="form-control" placeholder="ძრავის სიმძლავრე (ცხ/ძ)" v-model="form.inputs.data[item.index].hp">
                 </div>
                 <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.data[item.index].purpose.error.length">

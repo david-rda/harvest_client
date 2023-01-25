@@ -6,7 +6,7 @@ let store = createStore({
 
         loading: true,
 
-        portal: {},
+        teleport: { name: null, data: null },
 
         form: {},
 
@@ -16,25 +16,23 @@ let store = createStore({
             agency: 0,
             total: 0
 
-        },
-
-        role : window.localStorage.getItem("role"),
-        role_name : window.localStorage.getItem("role_name"),
-        token : window.localStorage.getItem("token"),
+        }
 
     },
 
     mutations : {
 
-        unportal(state) {
+        close(state) {
 
-            state.portal = {}
+            state.teleport = { title: null, name: null, data: null }
 
         },
 
-        teleport(state, data) {
+        open(state, teleport) {
 
-            state.portal = data
+            state.teleport.name = teleport.name
+
+            state.teleport.data = teleport.data
 
         },
 
@@ -70,32 +68,21 @@ let store = createStore({
 
             }
 
-        },
-
-        role(state) {
-            state.role = window.localStorage.getItem("role");
-        },
-
-        roleName(state) {
-            state.role_name = window.localStorage.getItem("role_name");
-        },
-
-        token(state) {
-            state.token = window.localStorage.getItem("token");
         }
+
     },
 
     actions : {
 
-        unportal({ commit }) {
+        close({ commit }) {
 
-            commit('unportal')
+            commit('close')
 
         },
 
-        teleport({ commit }, data) {
+        open({ commit }, teleport) {
 
-            commit('teleport', data)
+            commit('open', teleport)
 
         },
 
@@ -115,21 +102,10 @@ let store = createStore({
 
             commit('load', state)
 
-        },
-
-        setRole(context) {
-            context.commit("role");
-        },
-
-        setRoleName(context) {
-            context.commit("roleName");
-        },
-
-        setToken(context) {
-            context.commit("token");
         }
 
     }
+    
 });
 
 export default store;

@@ -125,7 +125,7 @@
 
                 </section>
 
-                <component v-if="DynamicForm" v-bind:is="DynamicForm" :errors="form.errors" :application="application" :inputs="form.inputs" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal"></component>
+                <component v-if="DynamicForm" v-bind:is="DynamicForm" :errors="form.errors" :application="application" :inputs="form.inputs" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal" :read="false"></component>
 
                 <section class="mb-4">
 

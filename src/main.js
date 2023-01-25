@@ -11,8 +11,10 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import router from "./routes/routes"; // პლიკაციაში განსაზღვრული მარშუტები
 import store from "@/store/store";
 
-axios.defaults.baseURL = "http://localhost:8000/api/";
-axios.defaults.headers['Authorization'] = 'Bearer '+store.state.token
+const user = JSON.parse(localStorage.getItem("user")) || null
+
+axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
+axios.defaults.headers['Authorization'] = 'Bearer ' + (user ? user.token : 'false')
 
 const app = createApp(App);
 

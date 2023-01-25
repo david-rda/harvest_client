@@ -4,11 +4,7 @@
 
         <aside>
 
-            <Teleport to="#portal" v-if="Object.keys(portal).length">
-
-                <Documents :application="portal" />
-
-            </Teleport>
+            <Popup v-if="this.$route.query.popup" />
 
             <div class="app-page-title">{{ title }}</div>
 
@@ -21,7 +17,7 @@
                         <tr>
 
                             <th scope="col" class="app-table-id">განაცხადი</th>
-                            <th scope="col">გაგზავნის თარიღი</th>
+                            <th scope="col">გაგზავნის/დამატების თარიღი</th>
                             <th scope="col">სტატუსი</th>
                             <th scope="col" class="text-end">მოქმედება</th>
 
@@ -38,23 +34,25 @@
                             </td>
                             <td>
                                 <div class="app-td-list" v-if="item.sent_date">
-                                    <span data-td-item="date">{{ moment(new Date(item.sent_date)).format('LL') }}</span>
-                                    <span data-td-item="date">{{ moment(new Date(item.sent_date)).format('LT') }}</span>
+                                    <span data-td-item="date">{{ moment(new Date(item.sent_date)).format('LLL') }}</span>
+                                    <span data-td-item="date">{{ moment(new Date(item.created_at)).format('LLL') }}</span>
                                 </div>
                                 <div class="app-td-list" v-else>
                                     <span>არ არის გადაგზავნილი</span>
+                                    <span data-td-item="date">{{ moment(new Date(item.created_at)).format('LLL') }}</span>
                                 </div>
                             </td>
                             <td>
                                 <div class="app-td-list">
-                                    <span data-td-item="status">გადასაგზავნი</span>
-                                    <span data-td-item="date">{{ moment(new Date(item.created_at)).format('lll') }}</span>
+                                    <span data-td-item="status">{{ item.ongoing_status.ongoing_status_name }}</span>
+                                    <span data-td-item="date">{{ item.status.status_name }}</span>
                                 </div>
                             </td>
                             <td class="text-end">
-                                <button class="btn btn-custom btn-sm" @click="teleport(item)">დოკუმენტაცია</button>
-                                <router-link class="btn btn-success btn-sm" :to="'/application?popup=documents&application=' + item.id">განაცხადის გაგზავნა</router-link>
-                                <router-link class="btn btn-primary btn-sm" :to="'/application.edit?application=' + item.id">რედაქტირება</router-link>
+                                <router-link class="btn btn-custom btn-sm" :to="{ query: { popup: 'documents', id: item.id } }">დოკუმენტაცია</router-link>
+                                <router-link class="btn btn-success btn-sm" :to="{ query: { popup: 'send', id: item.id } }" v-if="item.ongoing_status_id == 1">განაცხადის გაგზავნა</router-link>
+                                <router-link class="btn btn-primary btn-sm" :to="'/application.edit?application=' + item.id" v-if="item.ongoing_status_id == 1">რედაქტირება</router-link>
+                                <router-link class="btn btn-primary btn-sm" :to="'/application.read?application=' + item.id" v-if="item.ongoing_status_id > 1">წაკითხვა</router-link>
                             </td>
 
                         </tr>
@@ -72,12 +70,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import moment from 'moment'
+import { mapActions } from 'vuex'
 
+import moment from 'moment'
 import axios from 'axios'
 
-import Documents from '@/components/static/Documents.vue'
+import Popup from '@/components/static/Popup.vue'
 
 export default {
 
@@ -97,25 +95,55 @@ export default {
 
     },
 
-    components: { Documents },
-
-    computed: {
-
-        ...mapState({
-
-            portal: state => state.portal
-
-        })
-
-    },
+    components: { Popup },
 
     methods: {
 
-        ...mapActions([ 'load', 'teleport' ]),
+        ...mapActions([ 'load' ]),
 
         moment(date) {
 
             return moment(date)
+
+        },
+
+        applications() {
+
+            axios.get("/application/list").then(response => {
+
+                this.data.applications = response.data
+
+                this.load('finish')
+
+            }).catch(error => {
+
+                console.log(error)
+
+            })
+
+        }
+
+    },
+
+    watch: {
+
+        $route: {
+
+            immediate: true,
+            deep: true,
+
+            handler(to, from) {
+
+                if(from?.params.reload) {
+
+                    this.applications()
+
+                    this.$route.params.reload = false
+
+                }
+
+            }
+
 
         }
 
@@ -127,17 +155,7 @@ export default {
 
         moment.locale('ka'); 
 
-        axios.get("/application/list").then(response => {
-
-            this.data.applications = response.data
-
-            this.load('finish')
-
-        }).catch(error => {
-
-            console.log(error)
-
-        })
+        this.applications()
 
     }
 

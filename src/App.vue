@@ -4,11 +4,11 @@
 
         <div class="container d-flex">
 
-            <Side />
+            <Side v-if="user" />
 
             <div class="d-flex flex-column w-100">
         
-                <Header />
+                <Header v-if="user" />
         
                 <div class="container">
                     <router-view></router-view>
@@ -20,7 +20,7 @@
 
         <Footer />
         
-        <div id="portal"></div>
+        <div id="portal" v-if="this.$route.query.popup && user"></div>
 
     </div>
 
@@ -35,7 +35,23 @@ export default {
 
     name : "App",
 
-    components: { Header, Side, Footer }
+    data() {
+
+        return {
+
+            user: null
+
+        }
+
+    },
+
+    components: { Header, Side, Footer },
+
+    mounted() {
+
+        this.user = window.localStorage.getItem("user") || null
+
+    }
 
 }
 </script>

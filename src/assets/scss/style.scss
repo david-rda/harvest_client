@@ -3,6 +3,27 @@
     font-family: "frutiger_light";
 }
 
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0s linear;
+}
+
+.slide-fade-enter-from, .slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+
 h6 {
     font-family: frutiger_bold_caps;
 }
@@ -17,14 +38,6 @@ h6 {
 .app-form .form-input input, .app-form .form-input select, .app-form .form-input textarea {
     font-size: 14px;
     line-height: 24px;
-}
-
-.slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-    transition: all 0s linear;
 }
 
 .app-table .btn {
@@ -46,6 +59,11 @@ h6 {
 
 .app-td-list span {
     margin: 2px;
+}
+
+.app-td-list span:first-child {
+    font-size: 14px;
+    color: black;
 }
 
 .btn-custom {
@@ -74,7 +92,7 @@ h6 {
     vertical-align: middle;
     margin: 100px auto;
     border-radius: 6px;
-    padding: 20px;
+    padding: 30px;
 }
 
 .btn-custom:hover {
@@ -87,15 +105,11 @@ h6 {
     font-size: 14px;
 }
 
-.slide-fade-enter-from, .slide-fade-leave-to {
-    transform: translateX(20px);
-    opacity: 0;
-}
-
 footer {
     border-top: 1px solid #ddd;
 }
 
+.app-sign-form .form-input[data-error="true"] input,
 .app-form .form-input[data-error="true"] input {
     border: 1px solid #dc3545;
 }
@@ -170,6 +184,7 @@ footer {
     font-size: 14px;
 }
 
+.app-sign-form .form-input[data-error="true"] input:focus,
 .app-form .form-input[data-error="true"] input:focus {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.25rem #dc354540;
@@ -223,14 +238,6 @@ body {
 
 aside {
     margin: 0 0 35px 0;
-}
-
-.fade-enter-active, .fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-    opacity: 0;
 }
 
 header {
@@ -390,9 +397,15 @@ table tr:last-child td {
     width: 100%;
 }
 
+.app-popup-messages {
+    margin: 20px 0 0 0;
+}
+
 .alert {
-    font-size: 13px;
-    padding: 10px 15px;
+    font-size: 14px;
+    padding: 15px 20px;
+    line-height: 24px;
+    border: none;
 }
 
 .app-calculator strong {
@@ -423,4 +436,136 @@ table tr:last-child td {
     margin: 21px 10px;
     color: darkgreen;
     font-weight: bold;
+}
+
+.app-agreement ul {
+    font-size: 13px;
+    list-style: none;
+    border-radius: 6px;
+    line-height: 24px;
+    padding: 0;
+    color: #686868;
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+.app-agreement ul li {
+    margin: 10px 0;
+}
+
+.app-sign-form-title {
+    font-size: 20px;
+    position: relative;
+    font-family: 'frutiger_bold_caps';
+    margin: 0 0 20px 0;
+}
+
+.app-agreement span {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 0 20px 0;
+}
+
+.app-popup-title {
+    font-size: 20px;
+    position: relative;
+    font-family: 'frutiger_bold_caps';
+    margin: 0 0 30px 0;
+}
+
+.app-sign-form-title:after,
+.app-popup-title:after {
+    content: "";
+    height: 3px;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100px;
+    background: darkgreen;
+}
+
+.app-popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0 0 0;
+}
+
+.app-popup .btn {
+    font-family: 'frutiger_bold_caps';
+}
+
+.app-sign-form a {
+    font-family: 'frutiger_light';
+    font-size: 16px;
+}
+
+.app-form-info a {
+    font-family: 'frutiger_light';
+    font-size: 15px;
+}
+
+.app-agreement .form-group {
+    font-size: 14px;
+    margin: 15px 0;
+    font-family: 'frutiger_light_caps';
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.app-agreement label {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+header nav ul li a {
+    padding: 10px;
+    font-family: 'frutiger_light_caps';
+    text-decoration: none;
+    color: #005018;
+    font-size: 15px;
+}
+
+.app-header-nav {
+    margin: 20px -10px 0 -10px;
+    border-top: 1px solid #ddd;
+    padding: 25px 0 0 0;
+}
+
+.app-sign-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-sign-form form {
+    width: 650px;
+    padding: 30px 30px 0 30px;
+}
+
+.app-form-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.app-sign-form .card {
+    box-shadow: none;
+    border: 1px solid #e7e7e7;
+}
+
+.app-sign-form .btn {
+    font-family: 'frutiger_bold_caps';
+}
+
+.app-sign-form .form-messages {
+    margin-bottom: 15px;
 }

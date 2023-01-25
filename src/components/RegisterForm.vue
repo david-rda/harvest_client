@@ -12,6 +12,13 @@
                     <input type="text" placeholder="გვარი" class="form-control" v-model.trim="lastname">
                 </div>
                 <div class="mb-3">
+                    <select v-model="gender">
+                        <option disabled selected>აირჩიეთ სქესი</option>
+                        <option value="ქალი">ქალი</option>
+                        <option value="კაცი">კაცი</option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <input type="date" class="form-control" v-model.trim="bdate" placeholder="01-02-2000">
                 </div>
                 <div class="mb-3">
@@ -21,7 +28,7 @@
                     <input type="text" placeholder="მობილური ტელეფონის ნომერი" class="form-control" v-model.trim="phone">
                 </div>
                 <div class="mb-3">
-                    <input type="text" placeholder="ელ. ფოსტის მისამართი" class="form-control" v-model.trim="email">
+                    <input type="email" placeholder="ელ. ფოსტის მისამართი" class="form-control" v-model.trim="email">
                 </div>
                 <div class="mb-3">
                     <input type="password" placeholder="პაროლი" class="form-control" v-model.trim="password">
@@ -60,7 +67,8 @@
                 phone : "",
                 email : "",
                 password : "",
-                confirm_password : ""
+                confirm_password : "",
+                gender : ""
             }
         },
 
@@ -97,9 +105,29 @@
                             position : "top-end"
                         });
                         return false;
+                    }else if(this.firstname.length < 2) {
+                        this.$swal({
+                            title : "სახელი არ უნდა იყოს 2 სიმბოლოზე ნაკლები",
+                            icon : "warning",
+                            timerProgressBar: true,
+                            timer : 3000,
+                            toast : true,
+                            position : "top-end"
+                        });
+                        return false;
                     }else if(this.lastname == "" || this.lastname == null) {
                         this.$swal({
                             title : "შეიყვანეთ გვარი",
+                            icon : "warning",
+                            timerProgressBar: true,
+                            timer : 3000,
+                            toast : true,
+                            position : "top-end"
+                        });
+                        return false;
+                    }else if(this.gender == null || this.gender == "") {
+                        this.$swal({
+                            title : "მიუთითეთ სქესი",
                             icon : "warning",
                             timerProgressBar: true,
                             timer : 3000,
@@ -177,16 +205,7 @@
                             position : "top-end"
                         });
                         return false;
-                    }/*else if(!this.email.match(this.regexp_email)) {
-                        this.$swal({
-                            title : "შეიყვანეთ სწორი ფორმატის ელ. ფოსტა",
-                            icon : "warning",
-                            timerProgressBar: true,
-                            timer : 3000,
-                            toast : true,
-                            position : "top-end"
-                        });
-                    }*/else if(this.password == null || this.password == "") {
+                    }else if(this.password == null || this.password == "") {
                         this.$swal({
                             title : "შეიყვანეთ პაროლი",
                             icon : "warning",
@@ -225,7 +244,8 @@
                             mobile_number : this.phone,
                             email : this.email,
                             password : this.password,
-                            confirm_password : this.confirm_password
+                            confirm_password : this.confirm_password,
+                            gender : this.gender
                         }, {
                             headers : {
                                 "Authorization" : `Bearer ${this.$store.state.token}`
@@ -264,7 +284,7 @@
         font-size: 14px !important;
     }
 
-    input {
+    input, select {
         border-radius: 8px;
         border: 1px solid lighten(#787878, 45%) !important;
         background-color: #FFF;

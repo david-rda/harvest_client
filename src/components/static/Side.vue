@@ -19,16 +19,13 @@
                     <router-link :to="'/projects'">განცხადების დამატება</router-link>
                 </li>
                 <li>
-                    <router-link :to="'/applications'">ჩემი განაცხადები</router-link>
+                    <router-link :to="'/applications'">განაცხადები</router-link>
                 </li>
                 <li>
-                    <router-link :to="'/profile'">ჩემი პროფილი</router-link>
+                    <router-link :to="'/profile'">ანგარიშის პარამეტრები</router-link>
                 </li>
                 <li>
-                    <router-link :to="'/security'">პაროლის შეცვლა</router-link>
-                </li>
-                <li>
-                    <router-link :to="'/logout'" class="text-danger">ანგარიშიდან გასვლა</router-link>
+                    <router-link :to="'/logout'" class="text-danger" @click="signout">ანგარიშიდან გასვლა</router-link>
                 </li>
 
             </ul>
@@ -41,6 +38,18 @@
 
 <script>
 export default {
+
+    methods: {
+
+        signout() {
+
+            localStorage.removeItem("user")
+
+            this.$router.go({ path: '/signin' })
+
+        }
+
+    }
     
 }
 </script>

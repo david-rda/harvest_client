@@ -67,23 +67,11 @@ export default {
 
         document.title = this.title
     
-        const id = window.localStorage.getItem("user_id");
+        axios.get("/settings/projects").then(response => {
 
-        axios.get("/user/get/" + id).then(response => {
+            this.projects = response.data;
 
-            this.user = response.data;
-
-            axios.get("/settings/projects").then(response => {
-
-                this.projects = response.data;
-
-                this.load('finish')
-
-            }).catch(error => {
-
-                console.log(error)
-
-            });
+            this.load('finish')
 
         }).catch(error => {
 

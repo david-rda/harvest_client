@@ -1,5 +1,5 @@
 <template>
-    <div class="form-messages mt-4">
+    <div class="form-messages">
         <div class="alert alert-success">{{ message }}</div>
     </div>
 </template>

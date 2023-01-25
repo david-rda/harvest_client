@@ -39,11 +39,15 @@ export default {
         $route: {
 
             deep: true,
-            handler(to) {
+            handler(to, from) {
 
-                this.load('start')
+                if(to.params.name !== from.params.name) {
 
-                this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + to.params.name.toString().replaceAll('.','/') + '.vue')))
+                    this.load('start')
+
+                    this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + to.params.name.toString().replaceAll('.','/') + '.vue')))
+
+                }
 
             }
 
@@ -60,8 +64,6 @@ export default {
     mounted() {
 
         this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + this.$route.params.name.toString().replaceAll('.','/') + '.vue')))
-
-        this.setToken();
 
     }
 

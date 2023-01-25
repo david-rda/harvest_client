@@ -80,9 +80,9 @@ export default {
 
         document.title = 'ინფორმაცია'
     
-        const id = window.localStorage.getItem("user_id");
+        const user = JSON.parse(window.localStorage.getItem("user"));
 
-        axios.get("/user/get/" + id).then(response => {
+        axios.get("/user/get/" + user.id).then(response => {
 
             this.user = response.data;
 

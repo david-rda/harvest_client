@@ -68,30 +68,18 @@ export default {
         this.load('start')
 
         document.title = this.title
-    
-        const id = window.localStorage.getItem("user_id");
 
-        axios.get("/user/get/" + id).then(response => {
+        axios.get("/settings/projects").then(response => {
 
-            this.user = response.data;
+            this.projects = response.data;
 
-            axios.get("/settings/projects").then(response => {
-
-                this.projects = response.data;
-
-                this.load('finish')
-
-            }).catch(error => {
-
-                console.log(error)
-
-            });
+            this.load('finish')
 
         }).catch(error => {
 
             console.log(error)
 
-        });
+        })
         
     }
 

@@ -1,56 +1,36 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-// START კომპონენტები
-import LoginView from "../views/Login.vue";
-import Profile from "../views/Profile.vue";
-import Settings from "../views/Settings.vue";
-import UserInfo from "../views/UserInfo.vue";
 import ApplicationAdd from "../views/ApplicationAdd.vue";
-import Register from "../views/Register.vue";
-import Recovery from "../views/Recovery.vue";
 import Details from "../views/Details.vue";
 import NotFound from "../components/NotFound.vue";
-// END კომპონენტები
 
 import Template from '../views/Template.vue'
 
 const routes = [
 
     {
+        path: "/",
+        redirect: '/signin'
+    },
+    {
         path: '/:name',
         query: {
             name: String
         },
-        component: Template
-    },
-
-    {
-        path: "/",
-        component: LoginView
-    },
-    {
-        path: "/user/profile",
-        component: Profile
-    },
-    {
-        path: "/user/settings",
-        component: Settings
-    },
-    {
-        path: "/user/info",
-        component: UserInfo
+        component: Template,
+        children: [
+            {
+                path: '/:name',
+                query: {
+                    popup: Boolean
+                },
+                component: () => import('../components/static/Popup.vue')
+            }
+        ]
     },
     {
         path: "/statement/add",
         component: ApplicationAdd
-    },
-    {
-        path: "/register",
-        component: Register
-    },
-    {
-        path: "/recovery",
-        component: Recovery
     },
     {
         path: "/details/:id",
@@ -67,4 +47,30 @@ var router = createRouter({
     history: createWebHistory()
 });
 
-export default router;
+/*
+router.beforeEach((to, from, next) => {
+
+    const user = JSON.parse(localStorage.getItem("user")) || null
+  
+    if(to.matched.some(route => route.meta.auth)) {
+  
+      if(user) {
+  
+        next()
+  
+      } else {
+  
+        next({ path: '/signin' })
+  
+      }
+  
+    } else {
+  
+      next()
+  
+    }
+  
+  })*/
+  
+  export default router;
+  
