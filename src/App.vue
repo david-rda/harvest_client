@@ -2,20 +2,12 @@
 
     <div class="app-container container-fluid">
 
-        <div class="container d-flex">
+        <Header v-if="user" />
 
-            <Side v-if="user" />
+        <div class="container">
 
-            <div class="d-flex flex-column w-100">
-        
-                <Header v-if="user" />
-        
-                <div class="container">
-                    <router-view></router-view>
-                </div>
-
-            </div>
-
+            <router-view></router-view>
+            
         </div>
 
         <Footer />
@@ -28,7 +20,6 @@
 
 <script>
 import Header from '@/components/static/Header.vue'
-import Side from '@/components/static/Side.vue'
 import Footer from '@/components/static/Footer.vue'
 
 export default {
@@ -45,7 +36,7 @@ export default {
 
     },
 
-    components: { Header, Side, Footer },
+    components: { Header, Footer },
 
     mounted() {
 

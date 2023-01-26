@@ -242,7 +242,7 @@ aside {
 
 header {
     border-bottom: 1px solid #ddd;
-    padding: 35px 35px 25px 35px;
+    padding: 20px;
 }
 
 header h3 {
@@ -251,7 +251,7 @@ header h3 {
 
 aside .app-page-title {
     font-family: 'frutiger_light_caps';
-    margin: 20px 15px;
+    margin: 20px 0px;
     border-bottom: 1px solid darkgreen;
     display: inline-block;
     font-size: 22px;
@@ -277,25 +277,10 @@ aside .app-page-title {
     font-size: 14px;
 }
 
-main {
-    border-radius: 6px;
-}
-
 .side-nav {
     width: 300px;
     border-right: 1px solid #ddd;
     text-align: right;
-}
-
-.side-logo {
-    display: block;
-    padding: 60px;
-}
-
-.side-logo img {
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
 }
 
 .side-nav .router-link-active {
@@ -307,8 +292,13 @@ table tr:last-child td {
     border-bottom: none;
 }
 
-.app-form {
-    padding: 15px;
+.app-profile-button svg {
+    margin: 0 10px 0 0;
+}
+
+.app-profile-button {
+    display: flex;
+    align-items: center;
 }
 
 .form-item {
@@ -527,18 +517,104 @@ header nav ul {
     flex-wrap: nowrap;
 }
 
-header nav ul li a {
-    padding: 10px;
-    font-family: 'frutiger_light_caps';
+.dropdown-toggle::after {
+    margin-left: 10px;
+}
+.dropdown-toggle::after {
+    margin-left: 10px;
+}
+
+header nav ul li a.nav-link-lined:hover {
+    color: #63a205;
+}
+
+header nav ul li a.nav-link-lined:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    height: 4px;
+    width: 0;
+    background: #82bd00;
+    left: 0;
+    transition: all .3s ease-in-out;
+}
+
+header nav ul li a.nav-link-lined:hover:after {
+    content: "";
+    width: 50px;
+}
+
+header nav ul li a.nav-link-lined {
+    padding: 0;
+    font-family: 'frutiger_bold_caps';
     text-decoration: none;
-    color: #005018;
+    color: #4a4a4a;
+    position: relative;
+    font-size: 14px;
+    margin: 10px;
+    transition: all .3s;
+}
+
+header nav ul li a.nav-link-lined:focus {
+    color: #63a205;
+}
+
+.dropdown-menu {
+    padding: 15px;
+    border-color: #cbcbcb12;
+    box-shadow: 11px 10px 50px #0000000f;
+}
+
+.dropdown-menu li:last-child a {
+    border: none;
+}
+
+.dropdown-item.text-danger:active {
+    background-color: #ff00001a;
+    color: white;
+}
+
+.dropdown-item {
+    font-size: 14px;
+    text-align: right;
+    padding: 8px 13px;
+    border-radius: 6px;
+}
+
+.dropdown-item svg {
+    margin-left: 7px;
+}
+
+.nav-link {
     font-size: 15px;
 }
 
-.app-header-nav {
-    margin: 20px -10px 0 -10px;
-    border-top: 1px solid #ddd;
-    padding: 25px 0 0 0;
+header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.app-logo img {
+    width: 50px;
+    margin: 0 10px 0 0;
+}
+
+.app-logo a span {
+    max-width: 100px;
+    line-height: 1.3;
+}
+
+.app-logo a {
+    font-size: 14px;
+    font-family: 'frutiger_light';
+    display: inline-block;
+    margin: 0 20px 0 0;
+    text-decoration: none;
+    color: #58595b;
+    display: flex;
+    font-weight: bold;
+    align-items: center;
 }
 
 .app-sign-form {

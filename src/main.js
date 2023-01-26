@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import axios from "axios";
-import { BIconPlusLg, BIconFolder2, BIconInfoLg, BIconPower } from "bootstrap-icons-vue";
+import { BIconPlusLg, BIconFolder2, BIconInfoLg, BIconPower, BIconPersonCircle, BIconShieldCheck, BIconBoxArrowRight } from "bootstrap-icons-vue";
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -22,6 +22,9 @@ app.component("BIconPower", BIconPower);
 app.component("BIconPlusLg", BIconPlusLg);
 app.component("BIconFolder2", BIconFolder2);
 app.component("BIconInfoLg", BIconInfoLg);
+app.component("BIconPersonCircle", BIconPersonCircle);
+app.component("BIconShieldCheck", BIconShieldCheck);
+app.component("BIconBoxArrowRight", BIconBoxArrowRight);
 
 app.use(router);
 app.use(VueSweetalert2);

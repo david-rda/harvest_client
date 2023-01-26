@@ -44,8 +44,8 @@
                             </td>
                             <td>
                                 <div class="app-td-list">
-                                    <span data-td-item="status">{{ item.ongoing_status.ongoing_status_name }}</span>
-                                    <span data-td-item="date">{{ item.status.status_name }}</span>
+                                    <span data-td-item="status">{{ item.status.status_name }}</span>
+                                    <span data-td-item="date">{{ item.ongoing_status.ongoing_status_name }}</span>
                                 </div>
                             </td>
                             <td class="text-end">
@@ -60,6 +60,8 @@
                     </tbody>
 
                 </table>
+
+                <div class="alert alert-danger text-center" v-if="!data.applications.length">შენ არ გაქვს არც ერთი განაცხადი დამატებული.</div>
 
             </div>
 

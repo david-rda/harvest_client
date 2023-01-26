@@ -9,7 +9,7 @@
 
                 <h6>დამფუძნებლების / მეპაიეების სტრუქტურა</h6>
 
-                <div class="row mb-4 d-flex align-items-end">
+                <div class="row mb-2 mt-4 d-flex align-items-end">
 
                     <div class="form-input position-relative col-md-5 col-lg-5 col-sm-12 col-xs-12">
                         <label>დამფუძნებლის / მეპაიის სახელი, გვარი ( იურიდიული პირის შემთხვევაში დასახელება )</label>
@@ -42,8 +42,8 @@
                             <input type="text" ref="part" class="form-control" placeholder="წილი" v-model="form.inputs.founders[item.index].percent" @input="founder" :readonly="read" :disabled="read">
                         </div>
 
-                        <div class="form-input position-relative col-md-1 col-lg-1 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].percent.error.length" v-if="!read">
-                            <div class="btn btn-danger" @click="removeItem('founders', item.index)">წაშლა</div>
+                        <div class="form-input position-relative d-grid col-md-1 col-lg-1 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].percent.error.length" v-if="!read">
+                            <div class="btn btn-danger" @click="removeItem('founders', item.index)" :class="{ 'disabled' : form.inputs.founders.length == 1 }">წაშლა</div>
                         </div>
                         
                     </div>
@@ -65,10 +65,9 @@
             <h6>თანადაფინანსების განაცხადის მიზნობრიობა</h6>
 
             <div class="row">
-                <div class="form-input position-relative mt-4 mb-2 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.project_type.error.length">
-                    <label class="mb-2">სტანდარტული ან სპეციალური თანადაფინანსების პირობა</label>
+                <div class="form-input position-relative mt-3 mb-2 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.project_type.error.length">
                     <select class="form-select" v-model="form.inputs.project_type" @change="calculate" :readonly="read" :disabled="read">
-                        <option value="0" disabled selected>აირჩიეთ</option>
+                        <option value="0" disabled selected>აირჩიეთ მიზნობრიობა</option>
                         <option v-for="item in project_types" :key="item.id" :value="item.id">{{ item.project_type_name }}</option>
                     </select>
                     <div class="alert alert-warning mt-3" v-if="engine">ტექნიკა არ უნდა იყოს ექსპლუატაციაში ნამყოფი.</div>
@@ -90,20 +89,14 @@
                                 <label class="mb-2">მოდელი</label>
                                 <input type="text" class="form-control" placeholder="მოდელი" v-model="form.inputs.items[item.index].model" :readonly="read" :disabled="read">
                             </div>
-                        </div>
-
-                        <div class="row" v-if="engine">
-                            <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].hp.error.length">
-                                <label class="mb-2">ძრავის სიმზლავრე</label>
-                                <input type="text" class="form-control" placeholder="ძრავის სიმძლავრე (ცხ/ძ)" v-model="form.inputs.items[item.index].hp" :readonly="read" :disabled="read">
+                            <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].hp.error.length" v-if="engine">
+                                <label class="mb-2">ძრავის სიმძლავრე (ცხ/ძ მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)</label>
+                                <input type="text" class="form-control" placeholder="ძრავის სიმძლავრე (ცხ/ძ მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)" v-model="form.inputs.items[item.index].hp" :readonly="read" :disabled="read">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].purpose.error.length">
                                 <label class="mb-2">ტექნიკის დანიშნულება (რისთვის გამოიყენება)</label>
                                 <input type="text" class="form-control" placeholder="დანიშნულება" v-model="form.inputs.items[item.index].purpose" :readonly="read" :disabled="read">
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].manufactured_in.error.length">
                                 <label class="mb-2">ტექნიკის მწარმოებელი ქვეყანა</label>
                                 <input type="text" class="form-control" placeholder="ქვეყანა" v-model="form.inputs.items[item.index].manufactured_in" :readonly="read" :disabled="read">
@@ -112,9 +105,6 @@
                                 <label class="mb-2">ტექნიკის გამოშვების თარიღი <span class="text-danger">(არაუმეტეს 2 წლის)</span></label>
                                 <input type="date" class="form-control" placeholder="თარიღი" v-model="form.inputs.items[item.index].manufactured_on" :readonly="read" :disabled="read">
                             </div>
-                        </div>
-
-                        <div class="row">
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].company_name.error.length">
                                 <label class="mb-2">ტექნიკის მომწოდებელი კომპანიის დასახელება</label>
                                 <input type="text" class="form-control" placeholder="კომპანია" v-model="form.inputs.items[item.index].company_name" :readonly="read" :disabled="read">
@@ -127,7 +117,7 @@
 
                         <div class="row">
                             <div class="form-input position-relative mt-3 col-lg-4 col-md-4 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].currency.error.length">
-                                <label class="mb-2">ვალუტის კურსი</label>
+                                <label class="mb-2">ვალუტა</label>
                                 <select class="form-select" v-model="form.inputs.items[item.index].currency" @change="calculate" :readonly="read" :disabled="read">
                                     <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.currency_name }} ({{ currency.currency_value }})</option>
                                 </select>

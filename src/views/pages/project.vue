@@ -101,18 +101,18 @@
                             <label for="beneficiary_company_director" class="mb-2">კომპანიის დირექტორის სახელი, გვარი</label>
                             <input type="text" class="form-control" placeholder="სახელი, გვარი" id="beneficiary_company_director" v-model="form.inputs.beneficiary_company_director">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_phone.error.length">
-                            <label for="beneficiary_company_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_company_phone" v-model="form.inputs.beneficiary_company_phone">
-                        </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_additional_phone.error.length">
-                            <label for="beneficiary_company_additional_phone" class="mb-2">დამატებითი ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_company_additional_phone" v-model="form.inputs.beneficiary_company_additional_phone">
-                        </div>
                     </div>
                     <!-- იურიდიული პირის ველები -->
 
                     <div class="row">
+                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_phone.error.length">
+                            <label for="beneficiary_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_phone" v-model="form.inputs.beneficiary_phone">
+                        </div>
+                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_additional_phone.error.length">
+                            <label for="beneficiary_additional_phone" class="mb-2">დამატებითი ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_additional_phone" v-model="form.inputs.beneficiary_additional_phone">
+                        </div>
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_actual_address.error.length">
                             <label for="beneficiary_actual_address" class="mb-2">ფაქტობრივი მისამართი</label>
                             <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_actual_address" v-model="form.inputs.beneficiary_actual_address">
@@ -211,8 +211,8 @@ export default {
                     beneficiary_company_name: "",
                     beneficiary_company_id: "",
                     beneficiary_company_director: "",
-                    beneficiary_company_phone: "",
-                    beneficiary_company_additional_phone: ""
+                    beneficiary_phone: "",
+                    beneficiary_additional_phone: ""
 
                 },
 
@@ -237,8 +237,8 @@ export default {
                     beneficiary_company_name: { error: [] },
                     beneficiary_company_id: { error: [] },
                     beneficiary_company_director: { error: [] },
-                    beneficiary_company_phone: { error: [] },
-                    beneficiary_company_additional_phone: { error: [] }
+                    beneficiary_phone: { error: [] },
+                    beneficiary_additional_phone: { error: [] }
 
                 },
 
@@ -338,8 +338,8 @@ export default {
                 this.form.inputs.beneficiary_company_name = "";
                 this.form.inputs.beneficiary_company_id = "";
                 this.form.inputs.beneficiary_company_director = "";
-                this.form.inputs.beneficiary_company_phone = "";
-                this.form.inputs.beneficiary_company_additional_phone = "";
+                this.form.inputs.beneficiary_phone = "";
+                this.form.inputs.beneficiary_additional_phone = "";
 
             }
 

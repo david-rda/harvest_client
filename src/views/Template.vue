@@ -1,6 +1,6 @@
 <template>
 
-    <main class="container-fluid" :data-loading="loading">
+    <main :data-loading="loading">
 
         <component v-if="content" v-bind:is="content" v-show="loading === false" ></component>
 
