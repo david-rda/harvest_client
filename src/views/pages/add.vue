@@ -4,7 +4,11 @@
 
         <aside>
 
-            <div class="app-page-title">{{ form.data.project.project_title }}</div>
+            <div class="app-table-buttons">
+
+                <div class="app-page-title">{{ form.data.project.project_title }}</div>
+
+            </div>
 
             <form class="app-form" @submit.prevent="add">
 
@@ -14,12 +18,12 @@
 
                     <div class="row">
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_firstname.error.length">
-                            <label for="name" class="mb-2">განმცხადებლის სახელი</label>
-                            <input type="text" class="form-control" placeholder="სახელი" id="name" v-model="form.inputs.applicant_firstname">
+                            <label for="applicant_firstname" class="mb-2">განმცხადებლის სახელი</label>
+                            <input type="text" class="form-control" placeholder="სახელი" id="applicant_firstname" v-model="form.inputs.applicant_firstname">
                         </div>
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_lastname.error.length">
-                            <label for="lastname" class="mb-2">განმცხადებლის გვარი</label>
-                            <input type="text" class="form-control" placeholder="გვარი" id="lastname" v-model="form.inputs.applicant_lastname">
+                            <label for="applicant_lastname" class="mb-2">განმცხადებლის გვარი</label>
+                            <input type="text" class="form-control" placeholder="გვარი" id="applicant_lastname" v-model="form.inputs.applicant_lastname">
                         </div>
                     </div>
 
@@ -29,14 +33,14 @@
                             <input type="text" class="form-control" placeholder="ნომერი" id="phone" v-model="form.inputs.applicant_phone" maxlength="9">
                         </div>
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_email.error.length">
-                            <label for="email" class="mb-2">ელ. ფოსტა</label>
-                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="email" v-model="form.inputs.applicant_email">
+                            <label for="applicant_email" class="mb-2">ელ. ფოსტა</label>
+                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="applicant_email" v-model="form.inputs.applicant_email">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-input position-relative mt-3 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_additional_info.error.length">
-                            <label for="email" class="mb-2">დამატებითი ინფორმაცია</label>
+                            <label for="applicant_additional_info" class="mb-2">დამატებითი ინფორმაცია</label>
                             <textarea class="form-control" placeholder="დამატებითი ინფორმაცია" id="applicant_additional_info" v-model="form.inputs.applicant_additional_info"></textarea>
                         </div>
                     </div>
@@ -173,8 +177,8 @@ import { mapState, mapActions } from 'vuex'
 
 import axios from "axios"
 
-import Errors from '@/components/Errors.vue'
-import Success from '@/components/Success.vue'
+import Errors from '@/components/static/errors.vue'
+import Success from '@/components/static/success.vue'
 
 export default {
 
@@ -361,7 +365,7 @@ export default {
 
         DynamicForm() {
 
-            return defineAsyncComponent(() => import('./project/' + this.$route.query.name + '/Form.vue'))
+            return defineAsyncComponent(() => import('./project/' + this.$route.query.name + '/form.vue'))
 
         }
 

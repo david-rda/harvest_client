@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import Header from '@/components/static/Header.vue'
-import Footer from '@/components/static/Footer.vue'
+import Header from './components/static/header.vue'
+import Footer from './components/static/footer.vue'
 
 export default {
 
@@ -42,12 +42,13 @@ export default {
 
         this.user = window.localStorage.getItem("user") || null
 
+        console.log('%cCreation Of 2023 RDA Team', 'color: #198754; padding: 20px;')
+
     }
 
 }
 </script>
 
 <style lang="scss">
-    @import url("./assets/scss/style.scss"); // მთავარი scss ფაილი
     @import url("./assets/scss/fonts.scss"); // ფონტების დაიმპორტება გლობალურად
 </style>

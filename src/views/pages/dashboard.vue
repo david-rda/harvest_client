@@ -4,7 +4,11 @@
 
         <aside>
 
-            <div class="app-page-title">ინფორმაცია</div>
+            <div class="app-table-buttons">
+
+                <div class="app-page-title">ანგარიშის ინფორმაცია</div>
+
+            </div>
 
             <div class="app-info-table">
 
@@ -22,7 +26,7 @@
                         </tr>
                         <tr>
                             <td class="p-3">სახელი, გვარი</td>
-                            <td class="p-3">{{ user.name + " " + user.lastname }}</td>
+                            <td class="p-3">{{ user.firstname + " " + user.lastname }}</td>
                         </tr>
                         <tr>
                             <td class="p-3">ტელეფონის ნომერი</td>

@@ -2,7 +2,7 @@
 
     <main :data-loading="loading">
 
-        <component v-if="content" v-bind:is="content" v-show="loading === false" ></component>
+        <component v-if="content" v-bind:is="content"></component>
 
     </main>
 
@@ -57,7 +57,7 @@ export default {
 
     methods: {
 
-        ...mapActions([ 'setToken', 'load' ])
+        ...mapActions([ 'load' ])
 
     },
 

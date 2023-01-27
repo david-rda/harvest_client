@@ -16,7 +16,9 @@ let store = createStore({
             agency: 0,
             total: 0
 
-        }
+        },
+
+        user: JSON.parse(localStorage.getItem("user"))
 
     },
 
@@ -43,8 +45,6 @@ let store = createStore({
         },
 
         calculate(state, calculator) {
-
-            console.log("Calculating ...")
 
             state.calculated.total = Number(calculator.total).toFixed(4)
 
@@ -101,6 +101,54 @@ let store = createStore({
         load({ commit }, state) {
 
             commit('load', state)
+
+        }
+
+    },
+
+    getters: {
+
+        roles(state) {
+
+            return {
+
+                application: {
+                    
+                    view: {
+                        reviewer: [3,4,5,6].includes(state.user.role.id),
+                        officer: [2,3,5,6].includes(state.user.role.id)
+                    },
+                    requests: {
+                       add: [4,5,6].includes(state.user.role.id),
+                       upload: [1].includes(state.user.role.id)
+                    },
+                    manage: [2,3,4,5,6].includes(state.user.role.id),
+                    add: [1].includes(state.user.role.id),
+                    send: [1].includes(state.user.role.id),
+                    edit: [1].includes(state.user.role.id)
+
+                },
+
+                manage: {
+
+                    review: [2].includes(state.user.role.id),
+                    users: [6].includes(state.user.role.id),
+                    projects: [6].includes(state.user.role.id),
+                    add: {
+                        request: [4,5,6].includes(state.user.role.id)
+                    },
+                    change: {
+
+                        reviewer: [3,6].includes(state.user.role.id),
+                        officer: [5,6].includes(state.user.role.id),
+                        status: [4,5,6].includes(state.user.role.id),
+                        ongoing_status: [4,5,6].includes(state.user.role.id),
+    
+                    }
+
+                }
+
+            }
 
         }
 

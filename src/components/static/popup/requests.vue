@@ -2,7 +2,7 @@
 
     <div class="app-status-content" v-if="!loading">
 
-        <div class="app-popup-title">წარმოსადგენი დოკუმენტაცია</div>
+        <div class="app-popup-title">მოთხოვნილი დოკუმენტები</div>
 
         <div class="app-popup-content app-documents">
 

@@ -28,11 +28,36 @@ h6 {
     font-family: frutiger_bold_caps;
 }
 
-.app-form .form-input label {
+.app-read-form .form-input input, .app-read-form .form-input select, .app-read-form .form-input textarea {
+    background: transparent;
+    border: none;
+    padding: 0 0 5px 0;
+    border-radius: 0;
+    color: #000000;
+    resize: none;
+}
+
+.app-form .form-input label:not(.form-check-label) {
     font-family: 'frutiger_light_caps';
     font-size: 13px;
     color: black;
     font-weight: bold;
+}
+
+.form-check-label {
+    cursor: pointer;
+    margin: 2px;
+    color: #424242;
+    font-size: 15px;
+}
+
+.app-manage .app-form input.form-check-input {
+    font-size: 16px;
+    margin: 5px 10px 5px 0;
+}
+
+.app-tab-form .form-check {
+    padding: 0;
 }
 
 .app-form .form-input input, .app-form .form-input select, .app-form .form-input textarea {
@@ -40,9 +65,19 @@ h6 {
     line-height: 24px;
 }
 
+.app-tab-form .form-messages {
+    margin: 20px 0 0 0;
+}
+
+.app-tab-form .form-messages .alert:last-child {
+    margin: 0;
+}
+
 .app-table .btn {
-    font-family: 'frutiger_light_caps';
+    font-family: 'frutiger_light';
     padding: 5px 10px;
+    margin: 6px 0px 6px 10px;
+    font-size: 13px;
 }
 
 [data-td-item="date"] {
@@ -72,6 +107,32 @@ h6 {
     color: white;
 }
 
+.btn-custom:active,
+.btn-custom:hover {
+    background: #df9526!important;
+    border-color: #df9526!important;
+    color: white!important;
+}
+
+.btn-requests {
+    background: #ff7600;
+    border-color: #ff7600;
+    color: white;
+}
+
+.btn-requests:active,
+.btn-requests:hover {
+    background: #ef6f00!important;
+    border-color: #ef6f00!important;
+    color: white!important;
+}
+
+.app-table-td {
+    font-size: 14px;
+    display: flex;
+    padding: 12px 7px;
+}
+
 .app-popup-contaner {
     position: fixed;
     top: 0;
@@ -85,7 +146,8 @@ h6 {
 }
 
 .app-popup {
-    width: 700px;
+    min-width: 700px;
+    max-width: 700px;
     max-height: 80vh;
     background: white;
     display: table;
@@ -93,12 +155,8 @@ h6 {
     margin: 100px auto;
     border-radius: 6px;
     padding: 30px;
-}
-
-.btn-custom:hover {
-    background: #df9526;
-    border-color: #df9526;
-    color: white;
+    position: relative;
+    overflow: hidden;
 }
 
 .app-table-uid {
@@ -106,12 +164,26 @@ h6 {
 }
 
 footer {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #f7f7f7;
 }
 
 .app-sign-form .form-input[data-error="true"] input,
-.app-form .form-input[data-error="true"] input {
+.app-sign-form .form-input[data-error="true"] select,
+.app-sign-form .form-input[data-error="true"] textarea,
+.app-form .form-input[data-error="true"] input,
+.app-form .form-input[data-error="true"] select,
+.app-form .form-input[data-error="true"] textarea {
     border: 1px solid #dc3545;
+}
+
+.app-sign-form .form-input[data-error="true"] input:focus,
+.app-sign-form .form-input[data-error="true"] select:focus,
+.app-sign-form .form-input[data-error="true"] textarea:focus,
+.app-form .form-input[data-error="true"] input:focus,
+.app-form .form-input[data-error="true"] select:focus,
+.app-form .form-input[data-error="true"] textarea:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem #dc354540;
 }
 
 .app-form button[type="submit"] {
@@ -124,16 +196,37 @@ footer {
     object-fit: cover;
 }
 
-.app-table .btn {
-    font-family: 'frutiger_light_caps';
-    padding: 5px 10px;
-    margin: 6px 0px 6px 10px;
+.app-table-buttons {
+    margin: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+.app-table .app-table-buttons .btn {
+    margin: 0 10px 0 0;
+    font-family: 'frutiger_light';
 }
 
 .app-table table th {
     font-family: 'frutiger_bold_caps';
     font-size: 14px;
     padding: 10px 15px;
+    white-space: pre;
+}
+
+.app-page-title {
+    position: relative;
+}
+
+.app-table-buttons a {
+    padding: 10px 15px;
+    font-size: 13px;
+}
+
+.app-table {
+    margin: 20px 0 0 0;
 }
 
 .app-table-id {
@@ -142,9 +235,12 @@ footer {
     text-align: center;
 }
 
+.app-table-id .app-table-td {
+    justify-content: center;
+}
+
 .cards {
     font-size: 14px;
-    margin: 5px;
 }
 
 .card {
@@ -184,18 +280,11 @@ footer {
     font-size: 14px;
 }
 
-.app-sign-form .form-input[data-error="true"] input:focus,
-.app-form .form-input[data-error="true"] input:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.25rem #dc354540;
-}
-
 .loading {
     width: 100%;
     height: 1px;
     position: absolute;
     overflow: hidden;
-    background-color: #ddd;
     z-index: 1;
     left: 0;
     top: 100%;
@@ -207,8 +296,8 @@ footer {
     left: -50%;
     height: 1px;
     width: 40%;
-    background-color: $darkgreen;
-    animation: loading 1s linear infinite;
+    background: linear-gradient(45deg, transparent, #82bd00, transparent);
+    animation: loading 1.2s linear infinite;
 }
 
 body {
@@ -241,8 +330,11 @@ aside {
 }
 
 header {
-    border-bottom: 1px solid #ddd;
     padding: 20px;
+    position: relative;
+    background: #f7f7f7;
+    border-bottom: 1px solid #dddddd9e;
+    user-select: none;
 }
 
 header h3 {
@@ -250,12 +342,13 @@ header h3 {
 }
 
 aside .app-page-title {
-    font-family: 'frutiger_light_caps';
-    margin: 20px 0px;
-    border-bottom: 1px solid darkgreen;
+    font-family: 'frutiger_bold_caps';
+    margin: 0px;
     display: inline-block;
     font-size: 22px;
-    padding: 10px 20px 10px 0;
+    padding: 0;
+    color: #bfbfbf;
+    user-select: none;
 }
 
 .side-nav ul li:not(:last-child) {
@@ -301,6 +394,66 @@ table tr:last-child td {
     align-items: center;
 }
 
+.app-document .alert {
+    margin: 20px 0 0 0;
+}
+
+.app-manage.btn svg {
+    margin: 0 7px 0 0;
+}
+
+.app-manage form .app-form-buttons {
+    margin: 15px 0 0 0;
+}
+
+.app-form .nav-item a {
+    padding: 10px 12px 6px 12px;
+    font-size: 13px;
+    font-family: 'frutiger_light';
+    color: #000000ad;
+    font-weight: bold;
+    border: none;
+    padding: 10px 12px;
+    position: relative;
+}
+
+.app-popup-title strong {
+    color: #006400;
+}
+
+.app-tab-form {
+    padding: 15px 0 0 0;
+}
+
+.app-form .nav-item a:after {
+    content: "";
+    height: 0px;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    background: #198754;
+    width: 100%;
+    transition: all .3s;
+}
+
+.app-form .nav-item a.active:after {
+    height: 3px;
+}
+
+.app-form .nav-item a.active {
+    color: black;
+    margin: 0;
+}
+
+.app-manage form .app-form-buttons .btn {
+    font-family: 'frutiger_light_caps';
+    font-size: 14px;
+}
+
+.app-document-extensions {
+    margin: 5px 0 20px 0;
+}
+
 .form-item {
     position: relative;
     border: 1px solid #dee2e6;
@@ -310,9 +463,170 @@ table tr:last-child td {
     margin: 30px 0 0 0;
 }
 
+.app-popup-close {
+    position: absolute;
+    right: 30px;
+    top: 23px;
+    font-size: 24px;
+    color: #707070;
+    transition: all .2s;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.app-uploaded-document span:hover {
+    text-decoration: underline;
+    color: #0d6efd;
+}
+
+.app-uploaded-document span svg {
+    margin: 0 10px 0 0;
+    position: relative;
+    top: -1px;
+}
+
+.app-popup-close:hover {
+    color: black;
+}
+
+.app-uploaded-document {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0 0 0 6px;
+    margin: 15px 0 0 0;
+    border-bottom: 1px solid #dddddd5e;
+    border-left: 1px solid #eeeeeec7;
+    align-items: flex-end;
+}
+
+.form-control.input-load[type="file"]:before {
+    content: "გთხოვთ დაელოდოთ. ფაილი იტვირთება ...";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ffffff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-family: 'frutiger_light';
+    font-size: 13px;
+    border-radius: 0;
+    padding: 0 0 0 5px;
+    border-bottom: 1px solid #dddddd8a;
+}
+
+.form-control[type="file"]:not(.input-load):before {
+    content: "ფაილის არჩევა";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ffffff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    font-family: 'frutiger_light_caps';
+    font-size: 14px;
+}
+
+@keyframes spinner-border {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.form-control.input-load[type="file"]::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 6px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    vertical-align: text-bottom;
+    border: 1px solid #0d6efd;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+    margin: 11px;
+}
+
+.form-control.input-load[type="file"] {
+    border: 1px solid transparent;
+    background: white;
+}
+
+.form-file-input:hover {
+    box-shadow: 0 5px 20px #eeeeeec2;
+}
+
+.form-control.input-load:focus {
+    box-shadow: none;
+}
+
+.form-control[type="file"] {
+    position: relative;
+}
+
+.app-uploaded-documents {
+    margin: 20px 0 0 0;
+}
+
+.app-uploaded-document .app-delete-button {
+    text-decoration: underline;
+    font-size: 13px;
+    font-family: 'frutiger_light';
+    cursor: pointer;
+    padding: 10px;
+}
+
+.app-uploaded-document span {
+    margin: 0 10px 0 5px;
+    font-size: 13px;
+    font-family: 'frutiger_light';
+    padding: 10px;
+    cursor: pointer;
+}
+
+#portal {
+    position: relative;
+    z-index: 10000;
+}
+
+.form-file-input {
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #dfdfdf9c;
+    transition: all .2s;
+}
+
+.form-file-input label {
+    font-family: 'frutiger_light_caps';
+    font-size: 14px;
+}
+
+.form-file-input .badge {
+    border-radius: 4px;
+    padding: 8px 10px;
+    border: none;
+}
+
 .form-item .btn {
     font-family: 'frutiger_bold_caps';
     font-size: 12px;
+}
+
+.form-file-input .form-messages {
+    margin: 20px 0 0 0;
+}
+
+.form-file-input .form-messages .alert:first-child:last-child {
+    margin: 0;
 }
 
 .form-item[data-index]:before {
@@ -363,8 +677,7 @@ table tr:last-child td {
     position: relative;
 }
 
-.app-documents h6:before,
-.app-form h6:before {
+.app-documents h6:before, .app-form h6:before {
     content: "";
     height: 3px;
     width: 50px;
@@ -464,8 +777,7 @@ table tr:last-child td {
     margin: 0 0 30px 0;
 }
 
-.app-sign-form-title:after,
-.app-popup-title:after {
+.app-sign-form-title:after, .app-popup-title:after {
     content: "";
     height: 3px;
     position: absolute;
@@ -520,6 +832,7 @@ header nav ul {
 .dropdown-toggle::after {
     margin-left: 10px;
 }
+
 .dropdown-toggle::after {
     margin-left: 10px;
 }
@@ -631,6 +944,31 @@ header .container {
 .app-form-buttons {
     display: flex;
     align-items: center;
+}
+
+.app-page-uid span svg {
+    margin: 0 3px 0 0;
+}
+
+.app-page-uid .btn {
+    margin-left: 20px;
+}
+
+main {
+    min-height: 400px;
+}
+
+.app-page-uid {
+    margin: 0 0 30px 0;
+    font-family: 'frutiger_bold_caps';
+    color: #939393;
+    padding: 20px 0 20px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+    font-size: 18px;
 }
 
 .app-sign-form .card {

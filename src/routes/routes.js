@@ -1,76 +1,79 @@
-import { createRouter, createWebHistory } from "vue-router";
-
-import ApplicationAdd from "../views/ApplicationAdd.vue";
-import Details from "../views/Details.vue";
-import NotFound from "../components/NotFound.vue";
-
-import Template from '../views/Template.vue'
+import { createRouter, createWebHistory } from "vue-router"
 
 const routes = [
 
     {
-        path: "/",
-        redirect: '/signin'
-    },
-    {
         path: '/:name',
-        query: {
-            name: String
-        },
-        component: Template,
+        query: { name: String },
+        component: () => import('../views/template.vue'),
+
         children: [
             {
                 path: '/:name',
-                query: {
-                    popup: Boolean
-                },
-                component: () => import('../components/static/Popup.vue')
+                query: { popup: Boolean, id: Number, tab: Number },
+                component: () => import('../components/static/popup.vue')
             }
         ]
+
     },
-    {
-        path: "/statement/add",
-        component: ApplicationAdd
-    },
-    {
-        path: "/details/:id",
-        component: Details
-    },
+
     {
         path: "/:pathMatch(.*)*",
-        component: NotFound
+        component: () => import('../views/pages/404.vue')
     }
-];
+
+]
 
 var router = createRouter({
     routes: routes,
     history: createWebHistory()
 });
 
-/*
 router.beforeEach((to, from, next) => {
 
     const user = JSON.parse(localStorage.getItem("user")) || null
-  
-    if(to.matched.some(route => route.meta.auth)) {
-  
-      if(user) {
-  
-        next()
-  
-      } else {
-  
-        next({ path: '/signin' })
-  
-      }
-  
-    } else {
-  
-      next()
-  
+
+    if(user && to.path == '/') {
+
+        return next({ path: '/dashboard' })
+
     }
-  
-  })*/
+    
+    if(user) {
+
+        if(['/signin', '/recovery', '/signup'].includes(to.path)) {
+
+            return next({ path: '/dashboard' })
+
+        } else {
+
+            return next()
+
+        }
+
+    } else {
+
+        if(to.path == '/') {
+
+            return next({ path: '/signin' })
+
+        } else {
+
+            if(['/signin', '/recovery', '/signup'].includes(to.path)) {
+
+                return next()
+
+            } else {
+
+                return next({ path: '/signin' })
+
+            }
+
+        }
+
+    }
+
+  })
   
   export default router;
   

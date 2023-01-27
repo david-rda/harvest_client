@@ -61,8 +61,8 @@ import { mapActions } from 'vuex'
 
 import axios from "axios";
 
-import Errors from '@/components/Errors.vue'
-import Success from '@/components/Success.vue'
+import Errors from '@/components/static/errors.vue'
+import Success from '@/components/static/success.vue'
 
 export default {
     
@@ -122,7 +122,7 @@ export default {
 
                 }))
 
-                this.$router.push({ path: '/dashboard' });
+                this.$router.go({ path: '/dashboard' });
 
             }).catch(error => {
 

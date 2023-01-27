@@ -3,8 +3,12 @@
     <Transition name="fade" appear>
 
         <aside>
+            
+            <div class="app-table-buttons">
 
-            <div class="app-page-title">{{ form.data.project.project_title }}</div>
+                <div class="app-page-title">{{ form.data.project.project_title }}</div>
+
+            </div>
 
             <form class="app-form" @submit.prevent="saveApplication">
 
@@ -173,8 +177,8 @@ import { mapState, mapActions } from 'vuex'
 
 import axios from "axios"
 
-import Errors from '@/components/Errors.vue'
-import Success from '@/components/Success.vue'
+import Errors from '../../../components/static/errors.vue'
+import Success from '../../../components/static/success.vue'
 
 export default {
 
@@ -385,7 +389,7 @@ export default {
             this.form.data.juridical_status = response.data.juridical_status;
             this.form.data.legal_status = response.data.legal_status;
 
-            const DynamicForm = markRaw(defineAsyncComponent(() => import('../project/' + this.application.project.project_name + '/Form.vue')))
+            const DynamicForm = markRaw(defineAsyncComponent(() => import('../project/' + this.application.project.project_name + '/form.vue')))
 
             this.DynamicForm = DynamicForm
 

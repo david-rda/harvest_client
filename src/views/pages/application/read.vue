@@ -4,9 +4,22 @@
 
         <aside>
 
-            <div class="app-page-title">{{ form.data.project.project_title }}</div>
+            <div class="app-table-buttons">
 
-            <form class="app-form" @submit.prevent="saveApplication">
+                <div class="app-page-title">{{ form.data.project.project_title }}</div>
+
+            </div>
+
+            <div class="app-page-uid">
+                
+                <span>განაცხადის რედაქტირება - {{ application.application_uid }}</span>
+                
+                <router-link class="btn btn-secondary btn-sm app-manage" :to="{ query: { popup: 'manage', id: item.id, tab: 1 } }" v-if="roles.application.manage"><BIconGearFill />განცხადების მართვა</router-link>
+                <span class="btn btn-primary" @click="download"><BIconFiletypePdf /> განაცხადის ჩამოტვირთვა</span>
+            
+            </div>
+
+            <form class="app-form app-read-form" @submit.prevent="saveApplication">
 
                 <section class="mb-5">
 
@@ -167,12 +180,12 @@
 
 <script>
 import { markRaw, defineAsyncComponent } from "vue"
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 import axios from "axios"
 
-import Errors from '@/components/Errors.vue'
-import Success from '@/components/Success.vue'
+import Errors from '../../../components/static/errors.vue'
+import Success from '../../../components/static/success.vue'
 
 export default {
 
@@ -347,6 +360,26 @@ export default {
 
             this.form.params.is_legal = is_legal
 
+        },
+
+        download() {
+
+            axios.post("/application/download", { id: this.application.id }).then(response => {
+
+                const url = document.createElement('a')
+
+                url.href = 'data:'+response.data.file.mime+';base64,'+response.data.file.data
+
+                url.download = response.data.file.name
+                
+                url.click()
+
+            }).catch(error => {
+
+                console.log(error)
+
+            })
+
         }
 
     },
@@ -359,7 +392,9 @@ export default {
 
             dynamic: state => state.form
             
-        })
+        }),
+
+        ...mapGetters([ 'roles' ])
 
     },
 
@@ -383,7 +418,7 @@ export default {
             this.form.data.juridical_status = response.data.juridical_status;
             this.form.data.legal_status = response.data.legal_status;
 
-            const DynamicForm = markRaw(defineAsyncComponent(() => import('../project/' + this.application.project.project_name + '/Form.vue')))
+            const DynamicForm = markRaw(defineAsyncComponent(() => import('../project/' + this.application.project.project_name + '/form.vue')))
 
             this.DynamicForm = DynamicForm
 
