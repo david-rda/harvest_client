@@ -1,55 +1,59 @@
 <template>
 
-    <div class="app-status-content" v-if="!loading">
+    <Transition name="fade" appear>
 
-        <div class="app-popup-title">წარმოსადგენი დოკუმენტაცია</div>
+        <div class="app-status-content" v-if="ready">
 
-        <div class="app-popup-content app-documents">
+            <div class="app-popup-title">წარმოსადგენი დოკუმენტაცია</div>
 
-            <div class="form-file-input mb-3" v-for="document_type in document_types" :key="document_type.id">
+            <div class="app-popup-content app-documents">
 
-                <label :for="'document-'+document_type.id" class="form-label">{{ document_type.document_name }}</label>
-                
-                <div class="app-document-extensions" v-if="!document_type.application_status_id">
-                    <span class="badge bg-primary" v-for="extension in document_type.extensions" :key="extension.id">{{ extension.extension }}</span>
+                <div class="form-file-input mb-3" v-for="document_type in data.document_types" :key="document_type.id">
+
+                    <label :for="'document-'+document_type.id" class="form-label">{{ document_type.document_name }}</label>
+                    
+                    <div class="app-document-extensions" v-if="!document_type.application_status_id">
+                        <span class="badge bg-primary" v-for="extension in document_type.extensions" :key="extension.id">{{ extension.extension }}</span>
+                    </div>
+
+                    <input class="form-control" type="file" :id="'document-'+document_type.id" :data-document-type="document_type.id" :ref="'file-'+document_type.id" @change="upload($event, document_type.id)" v-if="!document_type.application_status_id">
+                    
+                    <div class="app-uploaded-documents" v-if="document_type.documents.length">
+                        <TransitionGroup name="fade" appear>
+                            <div class="app-uploaded-document" v-for="file in data.files[document_type.id]" :key="file.id">
+                                <span @click="download($event, file.id)">
+                                    <BIconDownload />
+                                    {{ file.original_name }}
+                                </span>
+                                <div class="app-delete-button text-danger" @click="remove($event, file.id, document_type.id)" v-if="!document_type.application_status_id">წაშლა</div>
+                            </div>
+                        </TransitionGroup>
+                    </div>
+
+                    <div class="form-messages" v-if="!document_type.documents.length">
+
+                        <div class="alert alert-danger">დოკუმენტები არ არის ატვირთული.</div>
+
+                    </div>
+
                 </div>
 
-                <input class="form-control" type="file" :id="'document-'+document_type.id" :data-document-type="document_type.id" :ref="'file-'+document_type.id" @change="upload($event, document_type.id)" v-if="!document_type.application_status_id">
-                
-                <div class="app-uploaded-documents" v-if="document_type.documents.length">
-                    <TransitionGroup name="fade" appear>
-                        <div class="app-uploaded-document" v-for="file in files[document_type.id]" :key="file.id">
-                            <span @click="download($event, file.id)">
-                                <BIconDownload />
-                                {{ file.original_name }}
-                            </span>
-                            <div class="app-delete-button text-danger" @click="remove($event, file.id, document_type.id)" v-if="!document_type.application_status_id">წაშლა</div>
-                        </div>
-                    </TransitionGroup>
-                </div>
+                <div class="app-popup-buttons">
 
-                <div class="form-messages" v-if="!document_type.documents.length">
-
-                    <div class="alert alert-danger">დოკუმენტები არ არის ატვირთული.</div>
+                    <router-link class="btn btn-secondary" :to="{ query: {} }">დახურვა</router-link>
 
                 </div>
-
-            </div>
-
-            <div class="app-popup-buttons">
-
-                <router-link class="btn btn-secondary" :to="{ query: {} }">დახურვა</router-link>
 
             </div>
 
         </div>
 
-    </div>
+    </Transition>
     
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import axios from 'axios'
 
@@ -59,15 +63,29 @@ export default {
 
         return {
 
-            loading: false,
+            data: {
 
-            types: [],
+                document_types: [],
 
-            document_types: [],
+                files: {}
 
-            files: {}
+            }
 
         }
+
+    },
+
+    computed: {
+
+        ...mapState({
+
+            ready(state) {
+                
+                return state.ready && this.data.document_types.length
+
+            }
+
+        })
 
     },
 
@@ -89,7 +107,7 @@ export default {
 
             axios.post("/application/document/upload", inputs, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
 
-                this.files[id].push(response.data.file)
+                this.data.files[id].push(response.data.file)
 
                 e.target.value = ""
 
@@ -109,7 +127,7 @@ export default {
 
             axios.delete("/application/document/delete/"+id).then(response => {
 
-                this.files[document_type].splice(this.files[document_type].findIndex(item => item.id === id),1)
+                this.data.files[document_type].splice(this.data.files[document_type].findIndex(item => item.id === id),1)
 
                 console.log(response.data)
 
@@ -142,25 +160,17 @@ export default {
 
     },
 
-    beforeUpdate() {
-
-        this.load('start')
-
-    },
-
     mounted() {
 
         axios.get("/application/documents/" + this.$route.query.id).then(response => {
 
-            this.document_types = response.data
+            this.data.document_types = response.data
 
             response.data.forEach(document_type => {
 
-                this.files[document_type.id] = document_type.documents
+                this.data.files[document_type.id] = document_type.documents
 
             })
-
-            this.load('finish')
 
         }).catch(error => {
 

@@ -14,28 +14,35 @@
 
                     <div class="app-sign-form-title">პაროლის აღდგენა</div>
 
-                    <div class="row">
+                    <div class="app-sign-form-inputs">
 
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.email.error.length">
-                            <label for="email" class="mb-2">ელ. ფოსტა</label>
-                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="email" v-model="form.inputs.email">
-                        </div>
-                        
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.personal_id.error.length">
-                            <label for="personal_id" class="mb-2">პირადი ნომერი</label>
-                            <input type="text" class="form-control" placeholder="პირადი ნომერი" id="personal_id" v-model="form.inputs.personal_id">
-                        </div>
-                        
-                    </div>
+                        <div class="row">
 
-                    <div class="app-form-buttons mt-4 mb-4 row">
-
-                        <div class="col-7 text-start">
-                            გაქვს ანგარიში ? <router-link to="/signin" class="link">გაიარე ავტორიზაცია.</router-link>
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.email.error.length">
+                                <label for="email" class="mb-2">ელ. ფოსტა</label>
+                                <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="email" v-model="form.inputs.email" :disabled="form.processing">
+                            </div>
+                            
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.personal_id.error.length">
+                                <label for="personal_id" class="mb-2">პირადი ნომერი</label>
+                                <input type="text" class="form-control" placeholder="პირადი ნომერი" id="personal_id" v-model="form.inputs.personal_id" :disabled="form.processing">
+                            </div>
+                            
                         </div>
 
-                        <div class="col-5 text-end">
-                            <button type="submit" class="btn btn-primary">პაროლის აღდგენა</button>
+                        <div class="app-form-buttons mt-4 mb-4 row">
+
+                            <div class="col-7 text-start">
+                                გაქვს ანგარიში ? <router-link to="/signin" class="link">გაიარე ავტორიზაცია.</router-link>
+                            </div>
+
+                            <div class="col-5 text-end">
+                                <button type="submit" class="btn btn-primary" :disabled="form.processing">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                                    პაროლის აღდგენა
+                                </button>
+                            </div>
+
                         </div>
 
                     </div>
@@ -70,6 +77,8 @@ export default {
 
             form: {
 
+                processing: false,
+
                 errors: {},
 
                 success: "",
@@ -100,6 +109,10 @@ export default {
         ...mapActions([ 'load' ]),
 
         submit() {
+            
+            this.reset()
+
+            this.form.processing = true
 
             axios.post("/password/recovery", this.form.inputs).then(response => {
 
@@ -107,7 +120,11 @@ export default {
 
                 this.form.success = response.data.message
 
-                // this.$router.push({ path: '/signin' });
+                setTimeout(() => {
+
+                    this.$router.push({ path: '/signin' });
+
+                }, 2000)
 
             }).catch(error => {
 
@@ -125,9 +142,24 @@ export default {
 
                 }
 
+                this.form.processing = false
+
             })
         
+        },
+
+        reset() {
+
+            this.form.errors = {}
+
+            for(let name in this.form.state) {
+
+                this.form.state[name].error= []
+
+            }
+
         }
+        
     },
 
     mounted() {

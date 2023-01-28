@@ -4,7 +4,7 @@ let store = createStore({
 
     state : {
 
-        loading: true,
+        ready: false,
 
         teleport: { name: null, data: null },
 
@@ -54,17 +54,17 @@ let store = createStore({
             
         },
 
-        load(state, loading) {
+        load(state, ready) {
 
-            if(loading == 'start') {
+            if(ready == 'start') {
 
-                state.loading = true
+                state.ready = false
 
             }
 
-            if(loading == 'finish') {
+            if(ready == 'finish') {
 
-                state.loading = false
+                state.ready = true
 
             }
 
@@ -98,9 +98,9 @@ let store = createStore({
 
         },
 
-        load({ commit }, state) {
+        load({ commit }, ready) {
 
-            commit('load', state)
+            commit('load', ready)
 
         }
 
@@ -119,13 +119,14 @@ let store = createStore({
                         officer: [2,3,5,6].includes(state.user.role.id)
                     },
                     requests: {
-                       add: [4,5,6].includes(state.user.role.id),
-                       upload: [1].includes(state.user.role.id)
+                       upload: [1].includes(state.user.role.id),
+                       read: [2,3,4].includes(state.user.role.id)
                     },
                     manage: [2,3,4,5,6].includes(state.user.role.id),
                     add: [1].includes(state.user.role.id),
                     send: [1].includes(state.user.role.id),
-                    edit: [1].includes(state.user.role.id)
+                    edit: [1].includes(state.user.role.id),
+                    report: [5,6].includes(state.user.role.id)
 
                 },
 

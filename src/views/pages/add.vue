@@ -1,8 +1,10 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <div class="app-table-buttons">
 
@@ -17,31 +19,31 @@
                     <h6>ზოგადი ინფორმაცია განმცხადებელზე</h6>
 
                     <div class="row">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_firstname.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.applicant_firstname.error.length">
                             <label for="applicant_firstname" class="mb-2">განმცხადებლის სახელი</label>
-                            <input type="text" class="form-control" placeholder="სახელი" id="applicant_firstname" v-model="form.inputs.applicant_firstname">
+                            <input type="text" class="form-control" placeholder="სახელი" id="applicant_firstname" v-model="form.inputs.applicant_firstname" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_lastname.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.applicant_lastname.error.length">
                             <label for="applicant_lastname" class="mb-2">განმცხადებლის გვარი</label>
-                            <input type="text" class="form-control" placeholder="გვარი" id="applicant_lastname" v-model="form.inputs.applicant_lastname">
+                            <input type="text" class="form-control" placeholder="გვარი" id="applicant_lastname" v-model="form.inputs.applicant_lastname" :disabled="form.processing">
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_phone.error.length">
-                            <label for="phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="ნომერი" id="phone" v-model="form.inputs.applicant_phone" maxlength="9">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.applicant_phone.error.length">
+                            <label for="applicant_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control" placeholder="ნომერი" id="applicant_phone" v-model="form.inputs.applicant_phone" maxlength="9" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_email.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.applicant_email.error.length">
                             <label for="applicant_email" class="mb-2">ელ. ფოსტა</label>
-                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="applicant_email" v-model="form.inputs.applicant_email">
+                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="applicant_email" v-model="form.inputs.applicant_email" :disabled="form.processing">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-input position-relative mt-3 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_additional_info.error.length">
                             <label for="applicant_additional_info" class="mb-2">დამატებითი ინფორმაცია</label>
-                            <textarea class="form-control" placeholder="დამატებითი ინფორმაცია" id="applicant_additional_info" v-model="form.inputs.applicant_additional_info"></textarea>
+                            <textarea class="form-control" placeholder="დამატებითი ინფორმაცია" id="applicant_additional_info" v-model="form.inputs.applicant_additional_info" :disabled="form.processing"></textarea>
                         </div>
                     </div>
 
@@ -52,84 +54,80 @@
                     <h6>ზოგადი ინფორმაცია პოტენციურ ბენეფიციარზე</h6>
 
                     <div class="row">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_legal_status_id.error.length">
-                            <label class="mb-2">იურიდიული სტატუსი</label>
-                            <select class="form-select" id="beneficiary_legal_status_id" v-model="form.inputs.beneficiary_legal_status_id" v-on:change="setJuridicalStatus($event)">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_legal_status_id.error.length">
+                            <label for="beneficiary_legal_status_id" class="mb-2">იურიდიული სტატუსი</label>
+                            <select class="form-select" id="beneficiary_legal_status_id" v-model="form.inputs.beneficiary_legal_status_id" v-on:change="set($event)" :disabled="form.processing">
                                 <option v-for="item in form.data.legal_status" :key="item.id" :value="item.id">{{ item.legal_status_name }}</option>
                             </select>
                         </div>
                     </div>
                     
-                    <!-- ინდ. მეწარმის ან ფიზიკური პირის ველები -->
                     <div class="row" v-show="!form.params.is_legal">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_firstname.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_firstname.error.length">
                             <label for="beneficiary_firstname" class="mb-2">ბენეფიციარის სახელი</label>
-                            <input type="text" class="form-control" placeholder="სახელი" id="beneficiary_firstname" v-model="form.inputs.beneficiary_firstname">
+                            <input type="text" class="form-control" placeholder="სახელი" id="beneficiary_firstname" v-model="form.inputs.beneficiary_firstname" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_lastname.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_lastname.error.length">
                             <label for="beneficiary_lastname" class="mb-2">ბენეფიციარის გვარი</label>
-                            <input type="text" class="form-control" placeholder="გვარი" id="beneficiary_lastname" v-model="form.inputs.beneficiary_lastname">
+                            <input type="text" class="form-control" placeholder="გვარი" id="beneficiary_lastname" v-model="form.inputs.beneficiary_lastname" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_pid.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_pid.error.length">
                             <label for="beneficiary_pid" class="mb-2">ბენეფიციარის პირადი ნომერი</label>
-                            <input type="text" class="form-control" placeholder="პირადი ნომერი" id="beneficiary_pid" v-model="form.inputs.beneficiary_pid">
+                            <input type="text" class="form-control" placeholder="პირადი ნომერი" id="beneficiary_pid" v-model="form.inputs.beneficiary_pid" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_gender.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_gender.error.length">
                             <label for="beneficiary_gender" class="mb-2">ბენეფიციარის სქესი</label>
-                            <select class="form-select" id="beneficiary_gender" v-model="form.inputs.beneficiary_gender">
-                                <option value="0" disabled selected>აირჩიეთ</option>
+                            <select class="form-select" id="beneficiary_gender" v-model="form.inputs.beneficiary_gender" :disabled="form.processing">
+                                <option value="" disabled selected>აირჩიეთ</option>
                                 <option v-for="item in form.data.genders" :key="item.id" :value="item.id">{{ item.gender_name }}</option>
                             </select>
                         </div>
                     </div>
-                    <!-- ინდ. მეწარმის ველები -->
 
-                    <!-- იურიდიული პირის ველები -->
                     <div class="row" v-show="form.params.is_legal">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_juridical_status_id.error" v-show="form.params.is_legal">
-                            <label class="mb-2">სამეწარმეო სტატუსი</label>
-                            <select class="form-select" v-model="form.inputs.beneficiary_juridical_status_id">
-                                <option value="0" disabled selected>აირჩიეთ</option>
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_juridical_status_id.error.length" v-show="form.params.is_legal">
+                            <label id="beneficiary_juridical_status_id" class="mb-2">სამეწარმეო სტატუსი</label>
+                            <select class="form-select" v-model="form.inputs.beneficiary_juridical_status_id" :disabled="form.processing">
+                                <option value="" disabled selected>აირჩიეთ</option>
                                 <option v-for="item in form.data.juridical_status" :key="item.id" :value="item.id">{{ item.juridical_status_name }}</option>
                             </select>
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_name.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_company_name.error.length">
                             <label for="beneficiary_company_name" class="mb-2">კომპანიის დასახელება</label>
-                            <input type="text" class="form-control" placeholder="კომპანიის დასახელება" id="beneficiary_company_name" v-model="form.inputs.beneficiary_company_name">
+                            <input type="text" class="form-control" placeholder="კომპანიის დასახელება" id="beneficiary_company_name" v-model="form.inputs.beneficiary_company_name" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_id.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_company_id.error.length">
                             <label for="beneficiary_company_id" class="mb-2">კომპანიის საიდენტიფიკაციო ნომერი</label>
-                            <input type="text" class="form-control" placeholder="კომპანიის საიდენტიფიკაციო ნომერი" id="beneficiary_company_id" v-model="form.inputs.beneficiary_company_id">
+                            <input type="text" class="form-control" placeholder="კომპანიის საიდენტიფიკაციო ნომერი" id="beneficiary_company_id" v-model="form.inputs.beneficiary_company_id" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_director.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_company_director.error.length">
                             <label for="beneficiary_company_director" class="mb-2">კომპანიის დირექტორის სახელი, გვარი</label>
-                            <input type="text" class="form-control" placeholder="სახელი, გვარი" id="beneficiary_company_director" v-model="form.inputs.beneficiary_company_director">
+                            <input type="text" class="form-control" placeholder="სახელი, გვარი" id="beneficiary_company_director" v-model="form.inputs.beneficiary_company_director" :disabled="form.processing">
                         </div>
                     </div>
-                    <!-- იურიდიული პირის ველები -->
 
                     <div class="row">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_phone.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_phone.error.length">
                             <label for="beneficiary_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_phone" v-model="form.inputs.beneficiary_phone">
+                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_phone" v-model="form.inputs.beneficiary_phone" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_additional_phone.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_additional_phone.error.length" :disabled="form.processing">
                             <label for="beneficiary_additional_phone" class="mb-2">დამატებითი ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_additional_phone" v-model="form.inputs.beneficiary_additional_phone">
+                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_additional_phone" v-model="form.inputs.beneficiary_additional_phone" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_actual_address.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_actual_address.error.length">
                             <label for="beneficiary_actual_address" class="mb-2">ფაქტობრივი მისამართი</label>
-                            <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_actual_address" v-model="form.inputs.beneficiary_actual_address">
+                            <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_actual_address" v-model="form.inputs.beneficiary_actual_address" :disabled="form.processing">
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_juridical_address.error.length">
+                        <div class="form-input position-relative mt-3 col-lg-6 col-sm-6 col-xs-12" :data-error="!!form.state.beneficiary_juridical_address.error.length">
                             <label for="beneficiary_juridical_address" class="mb-2">იურიდიული მისამართი</label>
-                            <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_juridical_address" v-model="form.inputs.beneficiary_juridical_address">
+                            <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_juridical_address" v-model="form.inputs.beneficiary_juridical_address" :disabled="form.processing">
                         </div>
                     </div>
 
                 </section>
 
-                <component v-bind:is="DynamicForm" :errors="form.errors" :inputs="form.inputs" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal" :read="false"></component>
+                <component v-if="ready" v-bind:is="DynamicForm" :processing="form.processing" :errors="form.errors" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal" :read="false"></component>
 
                 <section class="mb-4">
 
@@ -139,7 +137,7 @@
 
                         <ul class="app-calculator">
 
-                            <li><strong>საკუთარი სახსრები / დაფინანსების სხვა ფულადი წყარო</strong> {{ calculated.own }} <strong>ლარი</strong></li>
+                            <li><strong>საკუთარი სახსრები / სხვა ფულადი წყარო</strong> {{ calculated.own }} <strong>ლარი</strong></li>
                             <li><strong>სააგენტოს დაფინანსება</strong> {{ calculated.agency }} <strong>ლარი</strong></li>
                             <li><strong>სულ</strong> {{ calculated.total }} <strong>ლარი</strong></li>
 
@@ -147,7 +145,10 @@
 
                     </div>
 
-                    <button class="app-form-submit-button btn btn-success mt-2" :disabled="form.loading">განაცხადის დამატება</button>
+                    <button class="app-form-submit-button btn btn-success mt-2" :disabled="form.processing">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                        განაცხადის დამატება
+                    </button>
 
                 </section>
 
@@ -155,14 +156,6 @@
 
                 <Success :message="form.success" v-if="form.success"/>
                 
-                <!--
-                <div class="mt-4">
-                    <code>
-                        <pre>{{ Object.assign({}, form.inputs, dynamic.inputs ) }}</pre>
-                    </code>
-                </div>
-                -->
-        
             </form>
         
         </aside>
@@ -173,7 +166,7 @@
 
 <script>
 import { defineAsyncComponent } from "vue"
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios"
 
@@ -181,6 +174,8 @@ import Errors from '@/components/static/errors.vue'
 import Success from '@/components/static/success.vue'
 
 export default {
+    
+    components: { Errors, Success },
 
     data() {
 
@@ -188,7 +183,7 @@ export default {
 
             form: {
 
-                loading: false,
+                processing: false,
 
                 errors: {},
 
@@ -209,9 +204,9 @@ export default {
                     beneficiary_firstname: "",
                     beneficiary_lastname: "",
                     beneficiary_pid: "",
-                    beneficiary_gender: 0,
+                    beneficiary_gender: "",
 
-                    beneficiary_juridical_status_id: 0,
+                    beneficiary_juridical_status_id: "",
                     beneficiary_company_name: "",
                     beneficiary_company_id: "",
                     beneficiary_company_director: "",
@@ -246,20 +241,7 @@ export default {
 
                 },
 
-                data: {
-                    
-                    project: {
-
-                        project_types: []
-
-                    },
-                    
-                    currency: [],
-                    genders: [],
-                    juridical_status: [],
-                    legal_status: []
-
-                },
+                data: {},
 
                 params: {
 
@@ -272,7 +254,37 @@ export default {
         }
     },
 
-    components: { Errors, Success },
+    computed : {
+
+        ...mapState({
+
+            ready(state) {
+                
+                return state.ready && Object.keys(this.form.data).length
+
+            },
+
+            calculated(state) {
+                
+                return state.calculated
+
+            },
+
+            dynamic(state) {
+                
+                return state.form
+            
+            }
+
+        }),
+
+        DynamicForm() {
+
+            return defineAsyncComponent(() => import('./project/' + this.$route.query.name + '/form.vue'))
+
+        }
+
+    },
 
     watch: {
 
@@ -291,9 +303,9 @@ export default {
 
     methods : {
 
-        ...mapActions([ 'load' ]),
-
         add() {
+
+            this.form.processing = true
 
             this.form.errors = {}
 
@@ -307,7 +319,9 @@ export default {
 
                 this.success = response.data.message
 
-                this.$router.push({ path: '/applications?popup=documents&application='+response.data.application })
+                this.$router.push({ path: '/applications', query: { popup: 'documents', id: response.data.application } })
+
+                this.form.processing = false
 
             }).catch(error => {
 
@@ -323,11 +337,13 @@ export default {
 
                 }
 
+                this.form.processing = false
+
             })
 
         },
 
-        setJuridicalStatus(e) {
+        set(e) {
 
             const is_legal = Number(this.form.data.legal_status.find((item) => item.id == e.target.value).is_legal)
 
@@ -336,14 +352,12 @@ export default {
                 this.form.inputs.beneficiary_firstname = "";
                 this.form.inputs.beneficiary_lastname = "";
                 this.form.inputs.beneficiary_pid = "";
-                this.form.inputs.beneficiary_gender = 0;
+                this.form.inputs.beneficiary_gender = "";
 
-                this.form.inputs.beneficiary_juridical_status_id = 0,
+                this.form.inputs.beneficiary_juridical_status_id = "",
                 this.form.inputs.beneficiary_company_name = "";
                 this.form.inputs.beneficiary_company_id = "";
                 this.form.inputs.beneficiary_company_director = "";
-                this.form.inputs.beneficiary_phone = "";
-                this.form.inputs.beneficiary_additional_phone = "";
 
             }
 
@@ -353,35 +367,11 @@ export default {
 
     },
 
-    computed : {
-
-        ...mapState({
-            
-            calculated: state => state.calculated,
-
-            dynamic: state => state.form
-            
-        }),
-
-        DynamicForm() {
-
-            return defineAsyncComponent(() => import('./project/' + this.$route.query.name + '/form.vue'))
-
-        }
-
-    },
-
     mounted() {
 
-        axios.post("/settings/project", { name: this.$route.query.name }).then(response => {
+        axios.post("/settings/collector", { params: { name: this.$route.query.name }, data: ['project', 'currency', 'genders', 'juridical_status', 'legal_status'] }).then(response => {
 
-            this.form.data.project = response.data.project;
-            this.form.data.currency = response.data.currency;
-            this.form.data.genders = response.data.genders;
-            this.form.data.juridical_status = response.data.juridical_status;
-            this.form.data.legal_status = response.data?.legal_status;
-
-            this.load('finish')
+            this.form.data = response.data;
 
         }).catch(error => {
 

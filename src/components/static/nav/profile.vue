@@ -10,9 +10,12 @@
 
                     <li class="nav-item dropdown">
 
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">სახელი გვარი</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="profile-nav" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span>{{ user.firstname }} {{ user.lastname }}</span>
+                            <span>{{ user.role.name }}</span>
+                        </a>
                         
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile-nav">
 
                             <li>
                                 <router-link class="dropdown-item text-right" :to="{ path: '/profile' }">ანგარიშის მართვა <BIconPersonCircle /></router-link>
@@ -23,7 +26,7 @@
                             </li>
 
                             <li>
-                                <a href class="dropdown-item text-right" @click="signout">ანგარიშიდან გასვლა <BIconBoxArrowRight /></a>
+                                <span class="dropdown-item text-right" @click="signout">ანგარიშიდან გასვლა <BIconBoxArrowRight /></span>
                             </li>
 
                         </ul>
@@ -41,15 +44,39 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
+import axios from 'axios'
+
 export default {
+
+    computed: {
+
+        ...mapState([ 'user' ])
+
+    },
 
     methods: {
 
         signout() {
 
-            localStorage.removeItem("user")
+            axios.post("/logout").then(response => {
 
-            this.$router.go({ path: '/signin' })
+                localStorage.removeItem("user")
+
+                this.$router.go({ path: '/signin' })
+
+                console.log(response)
+
+            }).catch(error => {
+
+                localStorage.removeItem("user")
+
+                this.$router.go({ path: '/signin' })
+
+                console.log(error)
+
+            })
 
         }
 

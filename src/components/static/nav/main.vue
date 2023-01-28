@@ -5,7 +5,7 @@
         <ul class="nav nav-pills">
 
             <li class="nav-item">
-                <router-link class="nav-link nav-link-lined" :to="{ path: '/' }">მთავარი</router-link>
+                <router-link class="nav-link nav-link-lined" :to="{ path: '/dashboard' }">მთავარი</router-link>
             </li>
 
             <li class="nav-item" v-if="roles.application.add">
@@ -22,6 +22,10 @@
 
             <li class="nav-item" v-if="roles.manage.users">
                 <router-link class="nav-link nav-link-lined" :to="{ path: '/manage.users' }">მომხმარებლების მართვა</router-link>
+            </li>
+
+            <li class="nav-item" v-if="roles.report">
+                <router-link class="nav-link nav-link-lined" :to="{ path: '/report' }">რეპორტინგი</router-link>
             </li>
 
         </ul>

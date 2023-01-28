@@ -1,8 +1,10 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <Popup v-if="this.$route.query.popup" />
 
@@ -19,14 +21,12 @@
                     <thead>
 
                         <tr>
-
                             <th scope="col" class="app-table-id">განაცხადი</th>
                             <th scope="col">სტატუსი</th>
                             <th scope="col">გაგზავნის/დამატების თარიღი</th>
                             <th scope="col" v-if="roles.application.view.reviewer">პირველადი შემფასებელი</th>
                             <th scope="col" v-if="roles.application.view.officer">ოფიცერი</th>
                             <th scope="col" class="text-end">მოქმედება</th>
-
                         </tr>
 
                     </thead>
@@ -38,12 +38,14 @@
                             <td class="app-table-id">
                                 <div class="app-table-uid">{{ item.application_uid }}</div>
                             </td>
+
                             <td>
                                 <div class="app-td-list">
                                     <span data-td-item="status" v-if="item.status">{{ item.status.status_name }}</span>
                                     <span data-td-item="date">{{ item.ongoing_status.ongoing_status_name }}</span>
                                 </div>
                             </td>
+
                             <td>
                                 <div class="app-td-list" v-if="item.sent_date">
                                     <span data-td-item="date">{{ moment(new Date(item.sent_date)).format('LLL') }}</span>
@@ -64,12 +66,14 @@
                             </td>
 
                             <td class="text-end">
-                                <router-link class="btn btn-requests btn-sm" :to="{ query: { popup: 'requests', id: item.id } }" v-if="item.ongoing_status_id > 1 && roles.application.requests">მოთხოვნილი დოკუმენტები</router-link>
+                                
+                                <router-link class="btn btn-requests btn-sm" :to="{ query: { popup: 'requests', id: item.id } }" v-if="item.ongoing_status_id > 1 && roles.application.requests.upload">მოთხოვნილი დოკუმენტები</router-link>
                                 <router-link class="btn btn-custom btn-sm" :to="{ query: { popup: 'documents', id: item.id } }">წარმოსადგენი დოკუმენტაცია</router-link>
                                 <router-link class="btn btn-success btn-sm" :to="{ query: { popup: 'send', id: item.id } }" v-if="item.ongoing_status_id == 1 && roles.application.send">განაცხადის გაგზავნა</router-link>
-                                <router-link class="btn btn-primary btn-sm" :to="'/application.edit?application=' + item.id" v-if="item.ongoing_status_id == 1 && roles.application.edit">რედაქტირება</router-link>
-                                <router-link class="btn btn-primary btn-sm" :to="'/application.read?application=' + item.id" v-if="item.ongoing_status_id > 1">წაკითხვა</router-link>
+                                <router-link class="btn btn-primary btn-sm" :to="'/application.edit?id=' + item.id" v-if="item.ongoing_status_id == 1 && roles.application.edit">რედაქტირება</router-link>
+                                <router-link class="btn btn-primary btn-sm" :to="'/application.read?id=' + item.id" v-if="item.ongoing_status_id > 1">წაკითხვა</router-link>
                                 <router-link class="btn btn-secondary btn-sm app-manage" :to="{ query: { popup: 'manage', id: item.id, tab: 1 } }" v-if="roles.application.manage"><BIconGearFill />განცხადების მართვა</router-link>
+                            
                             </td>
 
                         </tr>
@@ -89,7 +93,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import moment from 'moment'
 import axios from 'axios'
@@ -106,7 +110,7 @@ export default {
 
             data: {
                 
-                applications: []
+                applications: null
 
             }
 
@@ -119,9 +123,13 @@ export default {
     computed: {
 
         ...mapState({
-            
-            roles: state => state.roles
 
+            ready(state) {
+                
+                return state.ready && this.data.applications
+
+            }
+            
         }),
 
         ...mapGetters([ 'roles' ])
@@ -129,8 +137,6 @@ export default {
     },
 
     methods: {
-
-        ...mapActions([ 'load' ]),
 
         moment(date) {
 
@@ -143,8 +149,6 @@ export default {
             axios.get("/application/list").then(response => {
 
                 this.data.applications = response.data
-
-                this.load('finish')
 
             }).catch(error => {
 

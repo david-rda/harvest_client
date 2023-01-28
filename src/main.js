@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import router from "./routes/routes";
+import store from "@/store/store";
 
 const app = createApp(App);
 
@@ -24,12 +26,7 @@ app.component("BIconDownload", BIconDownload);
 app.component("BIconGearFill", BIconGearFill);
 app.component("BIconFiletypePdf", BIconFiletypePdf);
 
-import router from "./routes/routes";
-
 app.use(router);
-
-import store from "@/store/store";
-
 app.use(store);
 
 app.mount("#app");

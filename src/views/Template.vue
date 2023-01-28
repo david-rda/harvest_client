@@ -1,10 +1,6 @@
 <template>
 
-    <main :data-loading="loading">
-
-        <component v-if="content" v-bind:is="content"></component>
-
-    </main>
+    <component v-if="content" v-bind:is="content"></component>
 
 </template>
 
@@ -28,7 +24,7 @@ export default {
 
         ...mapState({
 
-            loading: state => state.loading
+            ready: state => state.ready
 
         })
 
@@ -43,9 +39,7 @@ export default {
 
                 if(to.params.name !== from.params.name) {
 
-                    this.load('start')
-
-                    this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + to.params.name.toString().replaceAll('.','/') + '.vue')))
+                    this.setcontent()
 
                 }
 
@@ -57,13 +51,21 @@ export default {
 
     methods: {
 
-        ...mapActions([ 'load' ])
+        ...mapActions([ 'load' ]),
+
+        setcontent() {
+
+            this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + this.$route.params.name.toString().replaceAll('.','/') + '.vue')))
+
+        }
 
     },
-
+    
     mounted() {
 
-        this.content = markRaw(defineAsyncComponent(() => import('../views/pages/' + this.$route.params.name.toString().replaceAll('.','/') + '.vue')))
+        this.load('finish')
+
+        this.setcontent()
 
     }
 

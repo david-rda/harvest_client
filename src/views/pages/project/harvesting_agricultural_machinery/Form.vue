@@ -1,8 +1,7 @@
 <template>
 
-    <div>
-        
-        <!-- მეწილეების გრაფა იურიდიული პირისთვის -->
+    <Transition>
+
         <section class="mb-5" v-if="is_legal">
 
             <div class="mb-4 form-inputs-inline">
@@ -31,15 +30,15 @@
                     <div class="row mb-2" v-for="item in form.inputs.founders" :key="item.index">
 
                         <div class="form-input position-relative col-md-5 col-lg-5 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].name.error.length">
-                            <input type="text" class="form-control" placeholder="დამფუძნებელი / მეპაიე ..." v-model="form.inputs.founders[item.index].name" :readonly="read" :disabled="read">
+                            <input type="text" class="form-control" placeholder="დამფუძნებელი / მეპაიე ..." v-model="form.inputs.founders[item.index].name" :readonly="read" :disabled="read || processing">
                         </div>
 
                         <div class="form-input position-relative col-md-3 col-lg-3 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].identifier.error.length">
-                            <input type="text" class="form-control" placeholder="პ/ნ. / ს/კ. ..." v-model="form.inputs.founders[item.index].identifier" :readonly="read" :disabled="read">
+                            <input type="text" class="form-control" placeholder="პ/ნ. / ს/კ. ..." v-model="form.inputs.founders[item.index].identifier" :readonly="read" :disabled="read || processing">
                         </div>
 
                         <div class="form-input position-relative col-md-3 col-lg-3 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].percent.error.length">
-                            <input type="text" ref="part" class="form-control" placeholder="წილი" v-model="form.inputs.founders[item.index].percent" @input="founder" :readonly="read" :disabled="read">
+                            <input type="text" ref="part" class="form-control" placeholder="წილი" v-model="form.inputs.founders[item.index].percent" @input="founder" :readonly="read" :disabled="read || processing">
                         </div>
 
                         <div class="form-input position-relative d-grid col-md-1 col-lg-1 col-sm-12 col-xs-12" :data-error="!!form.state.founders[item.index].percent.error.length" v-if="!read">
@@ -60,21 +59,26 @@
 
         </section>
 
+    </Transition>
+
+    <Transition>
+
         <section class="mb-5">
 
             <h6>თანადაფინანსების განაცხადის მიზნობრიობა</h6>
 
             <div class="row">
-                <div class="form-input position-relative mt-3 mb-2 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.project_type.error.length">
-                    <select class="form-select" v-model="form.inputs.project_type" @change="calculate" :readonly="read" :disabled="read">
-                        <option value="0" disabled selected>აირჩიეთ მიზნობრიობა</option>
+                <div class="form-input position-relative mt-3 mb-2 col-md-12 col-lg-12 col-sm-12 col-xs-12" :data-error="!!form.state.project_type_id.error.length">
+                    <label id="project_type_id" class="mb-2">ტექნიკის დასახელება</label>
+                    <select class="form-select" v-model="form.inputs.project_type_id" @change="calculate" :readonly="read" :disabled="read || processing">
+                        <option value="" disabled selected>აირჩიეთ მიზნობრიობა</option>
                         <option v-for="item in project_types" :key="item.id" :value="item.id">{{ item.project_type_name }}</option>
                     </select>
                     <div class="alert alert-warning mt-3" v-if="engine">ტექნიკა არ უნდა იყოს ექსპლუატაციაში ნამყოფი.</div>
                 </div>
             </div>
 
-            <div class="app-form-items" v-if="form.inputs.project_type">
+            <div class="app-form-items" v-if="form.inputs.project_type_id">
 
                 <TransitionGroup name="slide-fade" appear>
             
@@ -83,52 +87,52 @@
                         <div class="row">
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].name.error.length">
                                 <label class="mb-2">ტექნიკის დასახელება</label>
-                                <input type="text" class="form-control" placeholder="დასახელება" v-model="form.inputs.items[item.index].name" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="დასახელება" v-model="form.inputs.items[item.index].name" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].model.error.length">
                                 <label class="mb-2">მოდელი</label>
-                                <input type="text" class="form-control" placeholder="მოდელი" v-model="form.inputs.items[item.index].model" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="მოდელი" v-model="form.inputs.items[item.index].model" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].hp.error.length" v-if="engine">
                                 <label class="mb-2">ძრავის სიმძლავრე (ცხ/ძ მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)</label>
-                                <input type="text" class="form-control" placeholder="ძრავის სიმძლავრე (ცხ/ძ მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)" v-model="form.inputs.items[item.index].hp" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="ძრავის სიმძლავრე (ცხ/ძ მხოლოდ ძრავიანი ტექნიკის შემთხვევაში)" v-model="form.inputs.items[item.index].hp" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].purpose.error.length">
                                 <label class="mb-2">ტექნიკის დანიშნულება (რისთვის გამოიყენება)</label>
-                                <input type="text" class="form-control" placeholder="დანიშნულება" v-model="form.inputs.items[item.index].purpose" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="დანიშნულება" v-model="form.inputs.items[item.index].purpose" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].manufactured_in.error.length">
                                 <label class="mb-2">ტექნიკის მწარმოებელი ქვეყანა</label>
-                                <input type="text" class="form-control" placeholder="ქვეყანა" v-model="form.inputs.items[item.index].manufactured_in" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="ქვეყანა" v-model="form.inputs.items[item.index].manufactured_in" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].manufactured_on.error.length">
                                 <label class="mb-2">ტექნიკის გამოშვების თარიღი <span class="text-danger">(არაუმეტეს 2 წლის)</span></label>
-                                <input type="date" class="form-control" placeholder="თარიღი" v-model="form.inputs.items[item.index].manufactured_on" :readonly="read" :disabled="read">
+                                <input type="date" class="form-control" placeholder="თარიღი" v-model="form.inputs.items[item.index].manufactured_on" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].company_name.error.length">
                                 <label class="mb-2">ტექნიკის მომწოდებელი კომპანიის დასახელება</label>
-                                <input type="text" class="form-control" placeholder="კომპანია" v-model="form.inputs.items[item.index].company_name" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="კომპანია" v-model="form.inputs.items[item.index].company_name" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-6 col-md-6 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].company_id.error.length">
                                 <label class="mb-2">ტექნიკის მომწოდებელი კომპანიის საიდენტიფიკაციო ნომერი</label>
-                                <input type="text" class="form-control" placeholder="ს/კ" v-model="form.inputs.items[item.index].company_id" :readonly="read" :disabled="read">
+                                <input type="text" class="form-control" placeholder="ს/კ" v-model="form.inputs.items[item.index].company_id" :readonly="read" :disabled="read || processing">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="form-input position-relative mt-3 col-lg-4 col-md-4 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].currency.error.length">
                                 <label class="mb-2">ვალუტა</label>
-                                <select class="form-select" v-model="form.inputs.items[item.index].currency" @change="calculate" :readonly="read" :disabled="read">
+                                <select class="form-select" v-model="form.inputs.items[item.index].currency" @change="calculate" :readonly="read" :disabled="read || processing">
                                     <option v-for="currency in currencies" :key="currency.id" :value="currency.id">{{ currency.currency_name }} ({{ currency.currency_value }})</option>
                                 </select>
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-4 col-md-4 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].price.error.length">
                                 <label class="mb-2">1 ერთეული ტექნიკის ღირებულება</label>
-                                <input ref="price" type="text" class="form-control" placeholder="1 ერთეული ტექნიკის ღირებულება" @input="calculate" v-model="form.inputs.items[item.index].price" :readonly="read" :disabled="read">
+                                <input ref="price" type="text" class="form-control" placeholder="1 ერთეული ტექნიკის ღირებულება" @input="calculate" v-model="form.inputs.items[item.index].price" :readonly="read" :disabled="read || processing">
                             </div>
                             <div class="form-input position-relative mt-3 col-lg-4 col-md-4 col-xs-12 col-sm-12" :data-error="!!form.state.items[item.index].quantity.error.length">
                                 <label class="mb-2">რაოდენობა</label>
-                                <input ref="quantity" type="number" class="form-control" min="1" @input="calculate" v-model="form.inputs.items[item.index].quantity" :readonly="read" :disabled="read">
+                                <input ref="quantity" type="number" class="form-control" min="1" @input="calculate" v-model="form.inputs.items[item.index].quantity" :readonly="read" :disabled="read || processing">
                             </div>
                         </div>
 
@@ -147,8 +151,8 @@
             </div>
 
         </section>
-
-    </div>
+    
+    </Transition>
 
 </template>
 
@@ -159,12 +163,13 @@ export default {
 
     props: {
         
-        read: Boolean,
+        processing: Boolean,
         errors: Object,
-        application: Object,
         project_types: Array,
         currency: Array,
-        is_legal: Number
+        is_legal: Number,
+        application: Object,
+        read: Boolean
 
     },
 
@@ -239,7 +244,7 @@ export default {
 
                 state: {
 
-                    project_type: { error: [] },
+                    project_type_id: { error: [] },
                     
                     items: [{
 
@@ -270,7 +275,7 @@ export default {
 
                 inputs: {
 
-                    project_type: 0,
+                    project_type_id: "",
 
                     items: [{
                         
@@ -322,7 +327,7 @@ export default {
 
         engine() {
 
-            return Number(this.form.inputs.project_type ? this.project_types.find(item => item.id == this.form.inputs.project_type).project_type_engine : 1)
+            return Number(this.form.inputs.project_type_id ? this.project_types.find(item => item.id == this.form.inputs.project_type_id).project_type_engine : 1)
 
         },
 
@@ -378,35 +383,34 @@ export default {
 
             immediate: true,
             deep: true,
+            
             handler(errors) {
 
-                Object.values(this.form.state.items).forEach((values,index) => {
+                if(Object.keys(errors).length) {
 
-                    for(let name in values) {
+                    for(let state in this.form.state) {
 
-                        if(errors['items.'+index+'.'+name]) {
+                        if(Array.isArray(this.form.state[state])) {
 
-                            this.form.state.items[index][name].error = errors['items.'+index+'.'+name]
+                            Object.values(this.form.state[state]).forEach((values,index) => {
 
-                        }
+                                for(let name in values) {
+                                    
+                                    this.form.state[state][index][name].error = errors[state+'.'+index+'.'+name] ? errors[state+'.'+index+'.'+name] : []
 
-                    }
+                                }
 
-                })
+                            })
 
-                Object.values(this.form.state.founders).forEach((values,index) => {
+                        } else {
 
-                    for(let name in values) {
-
-                        if(errors['founders.'+index+'.'+name]) {
-
-                            this.form.state.founders[index][name].error = errors['founders.'+index+'.'+name]
+                            this.form.state[state].error = errors[state] ? errors[state] : []
 
                         }
 
                     }
 
-                })
+                }
 
             }
 
@@ -420,9 +424,9 @@ export default {
 
             let agency = 0;
 
-            if(this.form.inputs.project_type && this.total) {
+            if(this.form.inputs.project_type_id && this.total) {
 
-                const project = this.project_types.find(item => item.id == this.form.inputs.project_type)
+                const project = this.project_types.find(item => item.id == this.form.inputs.project_type_id)
 
                 agency = this.total <= Number(project.range) ? Number(this.total) * Number(project.percent) / 100 : (this.total > Number(project.range) ? Number(project.co) : Number(project.co))
 
@@ -464,17 +468,19 @@ export default {
 
         },
 
-        ...mapActions([ 'calculator', 'inputs', 'load' ]),
+        ...mapActions([ 'calculator', 'inputs' ])
 
     },
 
     mounted() {
 
-        this.load('finish')
-
         if(this.application) {
 
-            this.form.inputs = this.application
+            this.form.inputs.project_type_id = this.application.project_type_id
+            
+            this.form.inputs.founders = this.application.founders
+            
+            this.form.inputs.items = this.application.items
 
             this.calculator({ total: this.application.total, agency: this.application.agency })
 

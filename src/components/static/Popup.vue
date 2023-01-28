@@ -4,7 +4,7 @@
 
         <Teleport to="#portal" v-if="popup">
 
-            <div class="app-popup-contaner">
+            <div class="app-popup-contaner" v-if="ready">
 
                 <div class="app-popup">
    
@@ -13,8 +13,6 @@
                         <BIconXLg />
                         
                     </router-link>
-
-                    <div class="loading" v-if="loading"></div>
 
                     <component v-bind:is="portal"></component>
 
@@ -29,15 +27,19 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
-import { defineAsyncComponent } from 'vue'
+import { markRaw, defineAsyncComponent } from 'vue'
 
 export default {
 
-    methods: {
+    data() {
 
-        ...mapActions([ 'load' ])
+        return {
+
+            portal: null
+
+        }
 
     },
 
@@ -45,29 +47,27 @@ export default {
 
         ...mapState({
 
-            loading: state => state.loading
-            
+            ready(state) {
+
+                return state.ready && this.portal
+
+            }
+
         }),
 
         popup() {
             
             return this.$route.query.popup
             
-        },
-
-        portal() {
-            
-            return defineAsyncComponent(() => import('./popup/' + this.$route.query.popup+ '.vue'))
-        
         }
 
     },
 
     mounted() {
 
-        this.load('start')
+        this.portal = markRaw(defineAsyncComponent(() => import('./popup/' + this.popup + '.vue')))
 
     }
-
+    
 }
 </script>

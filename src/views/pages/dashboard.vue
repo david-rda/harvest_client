@@ -1,8 +1,10 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <div class="app-table-buttons">
 
@@ -22,7 +24,7 @@
                         </tr>
                         <tr>
                             <td class="p-3">დამატებული განცხადებები</td>
-                            <td class="p-3">{{ 0 }}</td>
+                            <td class="p-3">{{ user.application_count }}</td>
                         </tr>
                         <tr>
                             <td class="p-3">სახელი, გვარი</td>
@@ -58,7 +60,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios";
 
@@ -74,12 +76,20 @@ export default {
 
     },
 
-    methods: {
+    computed: {
 
-        ...mapActions([ 'load' ])
+        ...mapState({
+
+            ready(state) {
+                
+                return state.ready && Object.keys(this.user).length
+
+            }
+
+        })
 
     },
-
+    
     mounted() {
 
         document.title = 'ინფორმაცია'
@@ -89,8 +99,6 @@ export default {
         axios.get("/user/get/" + user.id).then(response => {
 
             this.user = response.data;
-
-            this.load('finish')
 
         }).catch(error => {
 

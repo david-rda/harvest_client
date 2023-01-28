@@ -14,32 +14,39 @@
 
                     <div class="app-sign-form-title">ავტორიზაცია</div>
 
-                    <div class="row">
+                    <div class="app-sign-form-inputs">
 
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.email.error.length">
-                            <label for="email" class="mb-2">ელ. ფოსტა</label>
-                            <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="email" v-model="form.inputs.email">
-                        </div>
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
-                            <label for="password" class="mb-2">პაროლი</label>
-                            <input type="password" class="form-control" placeholder="პაროლი" id="password" v-model="form.inputs.password">
-                        </div>
-                        <div class="col-12 mt-2">
-                            <router-link to="/recovery" class="link">პაროლის აღდგენა</router-link>
-                        </div>
-                        
-                    </div>
+                        <div class="row">
 
-                    <div class="app-form-buttons mt-4 mb-4 row">
-
-                        <div class="col-7 text-start">
-                            არ გაქვს ანგარიში ? <router-link to="/signup" class="link">შექმენი ახალი.</router-link>
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.email.error.length">
+                                <label for="email" class="mb-2">ელ. ფოსტა</label>
+                                <input type="text" class="form-control" placeholder="ელ. ფოსტა" id="email" v-model="form.inputs.email" :disabled="form.processing">
+                            </div>
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
+                                <label for="password" class="mb-2">პაროლი</label>
+                                <input type="password" class="form-control" placeholder="პაროლი" id="password" v-model="form.inputs.password" :disabled="form.processing">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <router-link to="/recovery" class="link">პაროლის აღდგენა</router-link>
+                            </div>
+                            
                         </div>
 
-                        <div class="col-5 text-end">
-                            <button type="submit" class="btn btn-primary">ავტორიზაცია</button>
-                        </div>
+                        <div class="app-form-buttons mt-4 mb-4 row">
 
+                            <div class="col-7 text-start">
+                                არ გაქვს ანგარიში ? <router-link to="/signup" class="link">შექმენი ახალი.</router-link>
+                            </div>
+
+                            <div class="col-5 text-end">
+                                <button type="submit" class="btn btn-primary" :disabled="form.processing">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                                    ავტორიზაცია
+                                </button>
+                            </div>
+
+                        </div>
+                    
                     </div>
 
                     <Errors :errors="form.errors" v-if="Object.keys(form.errors).length"/>
@@ -72,6 +79,8 @@ export default {
 
             form: {
 
+                processing: false,
+
                 errors: {},
 
                 success: "",
@@ -103,6 +112,10 @@ export default {
 
         submit() {
 
+            this.reset()
+
+            this.form.processing = true
+
             axios.post("/login", this.form.inputs).then(response => {
 
                 this.form.errors = {}
@@ -113,6 +126,8 @@ export default {
 
                     token: response.data.token,
                     id: response.data.user.id,
+                    firstname: response.data.user.firstname,
+                    lastname: response.data.user.lastname,
                     role: {
                         
                         id: response.data.user.role_id,
@@ -122,7 +137,11 @@ export default {
 
                 }))
 
-                this.$router.go({ path: '/dashboard' });
+                setTimeout(() => {
+
+                    this.$router.go({ path: '/dashboard' });
+
+                }, 2000)
 
             }).catch(error => {
 
@@ -140,9 +159,24 @@ export default {
 
                 }
 
+                this.form.processing = false
+
             })
         
+        },
+
+        reset() {
+
+            this.form.errors = {}
+
+            for(let name in this.form.state) {
+
+                this.form.state[name].error= []
+
+            }
+
         }
+
     },
 
     mounted() {

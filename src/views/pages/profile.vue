@@ -1,10 +1,16 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
-            <div class="app-page-title">ჩემი პროფილი</div>
+            <div class="app-table-buttons">
+
+                <div class="app-page-title">{{ title }}</div>
+
+            </div>
 
             <div class="app-form">
                 
@@ -14,12 +20,12 @@
 
                         <div class="form-input col-6 mb-3" :data-error="!!form.state.firstname.error.length">
                             <label for="firstname" class="mb-2">სახელი</label>
-                            <input type="text" class="form-control" v-model="form.inputs.firstname" id="firstname" placeholder="სახელი ...">
+                            <input type="text" class="form-control" v-model="form.inputs.firstname" id="firstname" placeholder="სახელი ..." :disabled="form.processing">
                         </div>
 
                         <div class="form-input col-6 mb-3" :data-error="!!form.state.lastname.error.length">
                             <label for="lastname" class="mb-2">გვარი</label>
-                            <input type="text" class="form-control" v-model="form.inputs.lastname" id="lastname" placeholder="გვარი ...">
+                            <input type="text" class="form-control" v-model="form.inputs.lastname" id="lastname" placeholder="გვარი ..." :disabled="form.processing">
                         </div>
 
                     </div>
@@ -28,18 +34,23 @@
                         
                         <div class="form-input col-6 mb-3" :data-error="!!form.state.birth_date.error.length">
                             <label for="birth_date" class="mb-2">დაბადების თარიღი</label>
-                            <input type="date" class="form-control" v-model="form.inputs.birth_date" id="birth_date" placeholder="დაბადების თარიღი ...">
+                            <input type="date" class="form-control" v-model="form.inputs.birth_date" id="birth_date" placeholder="დაბადების თარიღი ..." :disabled="form.processing">
                         </div>
 
                         <div class="form-input col-6  mb-3" :data-error="!!form.state.mobile_number.error.length">
                             <label for="mobile_number" class="mb-2">ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" v-model="form.inputs.mobile_number" id="mobile_number" placeholder="ტელეფონის ნომერი ...">
+                            <input type="text" class="form-control" v-model="form.inputs.mobile_number" id="mobile_number" placeholder="ტელეფონის ნომერი ..." :disabled="form.processing">
                         </div>
 
                     </div>
 
                     <div class="form-buttons mt-3 mb-4">
-                        <button type="submit" class="btn btn-success">პროფილის განახლება</button>
+
+                        <button type="submit" class="btn btn-success" :disabled="form.processing">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                            პროფილის განახლება
+                        </button>
+
                     </div>
 
                     <Errors :errors="form.errors" v-if="Object.keys(form.errors).length"/>
@@ -57,7 +68,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios"
 
@@ -73,6 +84,8 @@ export default {
             title: 'ანგარიშის პარამეტრები',
 
             form: {
+
+                processing: false,
 
                 errors: {},
 
@@ -102,19 +115,41 @@ export default {
 
     },
 
+    computed: {
+
+        ...mapState({
+
+            ready(state) {
+
+                return state.ready && this.user
+
+            },
+
+            user(state) {
+
+                return state.user
+
+            }
+
+        })
+
+    },
+
     components: { Errors, Success },
 
     methods: {
 
-        ...mapActions([ 'load' ]),
-
         submit() {
+
+            this.form.processing = true
 
             axios.put("/user/info/update", this.form.inputs).then(response => {
 
                 this.form.errors = {}
 
                 this.form.success = response.data.message
+
+                this.form.processing = false
 
             }).catch(error => {
 
@@ -132,6 +167,8 @@ export default {
 
                 }
 
+                this.form.processing = false
+
             });
 
         }
@@ -142,18 +179,12 @@ export default {
 
         document.title = this.title
     
-        const user = JSON.parse(localStorage.getItem("user"))
+        axios.get("/user/get/" + this.user.id).then(response => {
 
-        axios.get("/user/get/" + user.id).then(response => {
-
-            this.user = response.data
-    
-            this.form.inputs.firstname = this.user.name
-            this.form.inputs.lastname = this.user.lastname
-            this.form.inputs.birth_date = this.user.birth_date
-            this.form.inputs.mobile_number = this.user.mobile_number
-
-            this.load('finish')
+            this.form.inputs.firstname = response.data.firstname
+            this.form.inputs.lastname = response.data.lastname
+            this.form.inputs.birth_date = response.data.birth_date
+            this.form.inputs.mobile_number = response.data.mobile_number
 
         }).catch(error => {
 

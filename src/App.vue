@@ -1,17 +1,21 @@
 <template>
 
-    <div class="app-container container-fluid">
+    <div class="app-container container-fluid" :data-user="!!user">
 
         <Header v-if="user" />
 
-        <div class="container">
+        <main class="container" :class="{ 'app-loading-container': !ready }">
 
             <router-view></router-view>
             
-        </div>
+        </main>
 
-        <Footer />
-        
+        <footer v-if="ready">
+
+            <span>Creation Of 2023 RDA Team</span>
+
+        </footer>
+
         <div id="portal" v-if="this.$route.query.popup && user"></div>
 
     </div>
@@ -19,28 +23,37 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 import Header from './components/static/header.vue'
-import Footer from './components/static/footer.vue'
 
 export default {
 
     name : "App",
 
-    data() {
+    computed: {
 
-        return {
+        ...mapState({
 
-            user: null
+            user: state => state.user,
 
-        }
+            ready: state => state.ready
+
+        })
 
     },
 
-    components: { Header, Footer },
+    components: { Header },
+
+    methods: {
+
+        ...mapActions([ 'load' ])
+
+    },
 
     mounted() {
 
-        this.user = window.localStorage.getItem("user") || null
+        this.load('start')
 
         console.log('%cCreation Of 2023 RDA Team', 'color: #198754; padding: 20px;')
 

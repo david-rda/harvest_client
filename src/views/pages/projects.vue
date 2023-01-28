@@ -1,8 +1,10 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <div class="app-table-buttons">
 
@@ -11,30 +13,34 @@
             </div>
 
             <div class="cards row">
-                
-                <div class="col-4 mb-4" v-for="item in projects" :key="item.id">
+                    
+                <TransitionGroup name="fade" appear>
 
-                    <div class="card">
+                    <div class="col-4 mb-4" v-for="item in data.projects" :key="item.id">
 
-                        <img class="card-img-top" src="http://mechanization.rda.gov.ge/client/slides/slide-1.jpg">
-                        
-                        <div class="card-body">
-                            <p class="card-text">{{ item.project_title }}</p>
-                            <router-link :to="'/add?name=' + item.project_name" class="btn btn-primary d-grid">ინფორმაცია</router-link>
-                        </div>
+                        <div class="card">
 
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item text-center" :class="item.project_active ? 'text-success' : 'text-danger'">{{ item.project_active ? 'პროგრამა აქტიურია' : 'პროგრამა შეჩერებულია' }}</li>
-                            <li class="list-group-item text-center">პროექტის ბიუჯეტი შეადგენს <strong>{{ Number(item.project_budget).toLocaleString('ka-GE', { style: 'decimal' }) }}</strong> ლარს</li>
-                        </ul>
+                            <img class="card-img-top" src="http://mechanization.rda.gov.ge/client/slides/slide-1.jpg">
+                            
+                            <div class="card-body">
+                                <p class="card-text">{{ item.project_title }}</p>
+                                <router-link :to="'/add?name=' + item.project_name" class="btn btn-primary d-grid">ინფორმაცია</router-link>
+                            </div>
 
-                        <div class="card-body">
-                            <router-link :to="'/add?name=' + item.project_name" class="btn btn-success d-grid">განაცხადის შევსება</router-link>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item text-center" :class="item.project_active ? 'text-success' : 'text-danger'">{{ item.project_active ? 'პროგრამა აქტიურია' : 'პროგრამა შეჩერებულია' }}</li>
+                                <li class="list-group-item text-center">პროექტის ბიუჯეტი შეადგენს <strong>{{ Number(item.project_budget).toLocaleString('ka-GE', { style: 'decimal' }) }}</strong> ლარს</li>
+                            </ul>
+
+                            <div class="card-body">
+                                <router-link :to="'/add?name=' + item.project_name" class="btn btn-success d-grid">განაცხადის შევსება</router-link>
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
+                </TransitionGroup>
 
             </div>
 
@@ -45,7 +51,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios";
 
@@ -57,29 +63,37 @@ export default {
 
             title: 'აირჩიეთ პროექტი',
 
-            projects: []
+            data: {
+                
+                projects: []
+
+            }
 
         }
 
     },
 
-    methods: {
+    computed: {
 
-        ...mapActions([ 'load' ])
+        ...mapState({
+
+            ready(state) {
+                
+                return state.ready && this.data.projects.length
+
+            }
+
+        })
 
     },
 
     mounted() {
 
-        this.load('start')
-
         document.title = this.title
 
         axios.get("/settings/projects").then(response => {
 
-            this.projects = response.data;
-
-            this.load('finish')
+            this.data.projects = response.data;
 
         }).catch(error => {
 

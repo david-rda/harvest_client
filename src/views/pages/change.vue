@@ -2,7 +2,7 @@
 
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <div class="d-flex justify-content-center p-4">
                 <img src="../../assets/images/RDA-Logo-Geo.png" width="400" />
@@ -14,25 +14,30 @@
 
                     <div class="app-sign-form-title">პაროლის შეცვლა</div>
 
-                    <div class="row">
+                    <div class="app-sign-form-inputs">
 
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
-                            <label for="password" class="mb-2">შეიყვანეთ ახალი პაროლი</label>
-                            <input type="password" class="form-control" placeholder="ელ. ფოსტა" id="password" v-model="form.inputs.password">
+                        <div class="row">
+
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
+                                <label for="password" class="mb-2">შეიყვანეთ ახალი პაროლი</label>
+                                <input type="password" class="form-control" placeholder="ელ. ფოსტა" id="password" v-model="form.inputs.password" :disabled="form.processing">
+                            </div>
+                            <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
+                                <label for="confirm_password" class="mb-2">გაიმეორეთ ახალი პაროლი</label>
+                                <input type="password" class="form-control" placeholder="პაროლი" id="confirm_password" v-model="form.inputs.confirm_password" :disabled="form.processing">
+                            </div>
+                        
                         </div>
-                        <div class="form-input position-relative mt-3 col-12" :data-error="!!form.state.password.error.length">
-                            <label for="confirm_password" class="mb-2">გაიმეორეთ ახალი პაროლი</label>
-                            <input type="password" class="form-control" placeholder="პაროლი" id="confirm_password" v-model="form.inputs.confirm_password">
-                        </div>
-                      
+                        
                     </div>
 
                     <div class="app-form-buttons mt-4 mb-4 row">
 
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary d-grid">პაროლის შეცვლა</button>
-                        </div>
-
+                        <button type="submit" class="btn btn-primary w-100" :disabled="form.processing">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                            პაროლის შეცვლა
+                        </button>
+                
                     </div>
 
                     <Errors :errors="form.errors" v-if="Object.keys(form.errors).length"/>
@@ -50,7 +55,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios";
 
@@ -64,6 +69,8 @@ export default {
         return {
 
             form: {
+
+                processing: false,
 
                 errors: {},
 
@@ -88,11 +95,19 @@ export default {
         }
     },
 
+    computed: {
+
+        ...mapState({
+
+            ready: state => state.ready
+
+        })
+
+    },
+
     components: { Errors, Success },
 
     methods: {
-
-        ...mapActions([ 'load' ]),
 
         submit() {
 
@@ -102,7 +117,11 @@ export default {
 
                 this.form.success = response.data.message
 
-                // this.$router.push({ path: '/signin' });
+                setTimeout(() => {
+
+                    this.$router.push({ path: '/signin' });
+
+                }, 2000)
 
             }).catch(error => {
 
@@ -123,12 +142,6 @@ export default {
             })
         
         }
-    },
-
-    mounted() {
-
-        this.load('finish')
-
     }
 
 }

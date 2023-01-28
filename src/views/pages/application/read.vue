@@ -1,8 +1,10 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
             <div class="app-table-buttons">
 
@@ -12,10 +14,15 @@
 
             <div class="app-page-uid">
                 
-                <span>განაცხადის რედაქტირება - {{ application.application_uid }}</span>
+                <span>განაცხადის წაკითხვა - {{ application.application_uid }}</span>
                 
-                <router-link class="btn btn-secondary btn-sm app-manage" :to="{ query: { popup: 'manage', id: item.id, tab: 1 } }" v-if="roles.application.manage"><BIconGearFill />განცხადების მართვა</router-link>
-                <span class="btn btn-primary" @click="download"><BIconFiletypePdf /> განაცხადის ჩამოტვირთვა</span>
+                <div class="app-page-action-buttons" v-if="application.status_id">
+                    <router-link class="btn btn-secondary app-manage" :to="{ query: { popup: 'manage', id: this.$route.query.id, tab: 1 } }" v-if="roles.application.manage"><BIconGearFill />განცხადების მართვა</router-link>
+                    <span class="btn btn-primary" @click="download" :disabled="form.processing">
+                        <BIconFiletypePdf /> განაცხადის ჩამოტვირთვა
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                    </span>
+                </div>
             
             </div>
 
@@ -27,8 +34,8 @@
 
                     <div class="row">
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_firstname.error.length">
-                            <label for="name" class="mb-2">განმცხადებლის სახელი</label>
-                            <input type="text" class="form-control" placeholder="სახელი" id="name" v-model="form.inputs.applicant_firstname" readonly disabled>
+                            <label for="applicant_firstname" class="mb-2">განმცხადებლის სახელი</label>
+                            <input type="text" class="form-control" placeholder="სახელი" id="applicant_firstname" v-model="form.inputs.applicant_firstname" readonly disabled>
                         </div>
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.applicant_lastname.error.length">
                             <label for="lastname" class="mb-2">განმცხადებლის გვარი</label>
@@ -63,7 +70,7 @@
                     <div class="row">
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_legal_status_id.error.length">
                             <label class="mb-2">იურიდიული სტატუსი</label>
-                            <select class="form-select" id="beneficiary_legal_status_id" v-model="form.inputs.beneficiary_legal_status_id" v-on:change="setJuridicalStatus($event)" readonly disabled>
+                            <select class="form-select" id="beneficiary_legal_status_id" v-model="form.inputs.beneficiary_legal_status_id" v-on:change="set($event)" readonly disabled>
                                 <option v-for="item in form.data.legal_status" :key="item.id" :value="item.id">{{ item.legal_status_name }}</option>
                             </select>
                         </div>
@@ -86,7 +93,7 @@
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_gender.error.length">
                             <label for="beneficiary_gender" class="mb-2">ბენეფიციარის სქესი</label>
                             <select class="form-select" id="beneficiary_gender" v-model="form.inputs.beneficiary_gender" readonly disabled>
-                                <option value="0" disabled selected>აირჩიეთ</option>
+                                <option value="" disabled selected>აირჩიეთ</option>
                                 <option v-for="item in form.data.genders" :key="item.id" :value="item.id">{{ item.gender_name }}</option>
                             </select>
                         </div>
@@ -95,10 +102,10 @@
 
                     <!-- იურიდიული პირის ველები -->
                     <div class="row" v-show="form.params.is_legal">
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_juridical_status_id.error" v-show="form.params.is_legal">
+                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_juridical_status_id.error.length" v-show="form.params.is_legal">
                             <label class="mb-2">სამეწარმეო სტატუსი</label>
                             <select class="form-select" v-model="form.inputs.beneficiary_juridical_status_id" readonly disabled>
-                                <option value="0" disabled selected>აირჩიეთ</option>
+                                <option value="" disabled selected>აირჩიეთ</option>
                                 <option v-for="item in form.data.juridical_status" :key="item.id" :value="item.id">{{ item.juridical_status_name }}</option>
                             </select>
                         </div>
@@ -114,18 +121,17 @@
                             <label for="beneficiary_company_director" class="mb-2">კომპანიის დირექტორის სახელი, გვარი</label>
                             <input type="text" class="form-control" placeholder="სახელი, გვარი" id="beneficiary_company_director" v-model="form.inputs.beneficiary_company_director" readonly disabled>
                         </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_phone.error.length">
-                            <label for="beneficiary_company_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_company_phone" v-model="form.inputs.beneficiary_company_phone" readonly disabled>
-                        </div>
-                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_company_additional_phone.error.length">
-                            <label for="beneficiary_company_additional_phone" class="mb-2">დამატებითი ტელეფონის ნომერი</label>
-                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_company_additional_phone" v-model="form.inputs.beneficiary_company_additional_phone" readonly disabled>
-                        </div>
                     </div>
-                    <!-- იურიდიული პირის ველები -->
 
                     <div class="row">
+                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_phone.error.length">
+                            <label for="beneficiary_phone" class="mb-2">მობილური ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control" placeholder="ნომერი" id="beneficiary_phone" v-model="form.inputs.beneficiary_phone" readonly disabled>
+                        </div>
+                        <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_additional_phone.error.length">
+                            <label for="beneficiary_additional_phone" class="mb-2">დამატებითი ტელეფონის ნომერი</label>
+                            <input type="text" class="form-control" placeholder="დამატებითი ნომერი" id="beneficiary_additional_phone" v-model="form.inputs.beneficiary_additional_phone" readonly disabled>
+                        </div>
                         <div class="form-input position-relative mt-3 col-md-6 col-lg-6 col-sm-12 col-xs-12" :data-error="!!form.state.beneficiary_actual_address.error.length">
                             <label for="beneficiary_actual_address" class="mb-2">ფაქტობრივი მისამართი</label>
                             <input type="text" class="form-control" placeholder="მისამართი" id="beneficiary_actual_address" v-model="form.inputs.beneficiary_actual_address" readonly disabled>
@@ -138,7 +144,7 @@
 
                 </section>
 
-                <component v-if="DynamicForm" v-bind:is="DynamicForm" :errors="form.errors" :application="application" :inputs="form.inputs" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal" :read="true"></component>
+                <component v-if="ready" v-bind:is="DynamicForm" :processing="form.processing" :errors="form.errors" :project_types="form.data.project.project_types" :currency="form.data.currency" :is_legal="form.params.is_legal" :application="application" :read="true"></component>
 
                 <section class="mb-4">
 
@@ -158,18 +164,6 @@
 
                 </section>
 
-                <Errors :errors="form.errors" v-if="form.errors"/>
-
-                <Success :message="form.success" v-if="form.success"/>
-                
-                <!--
-                <div class="mt-4">
-                    <code>
-                        <pre>{{ Object.assign({}, form.inputs, dynamic.inputs ) }}</pre>
-                    </code>
-                </div>
-                -->
-        
             </form>
         
         </aside>
@@ -184,9 +178,6 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 import axios from "axios"
 
-import Errors from '../../../components/static/errors.vue'
-import Success from '../../../components/static/success.vue'
-
 export default {
 
     data() {
@@ -199,7 +190,7 @@ export default {
 
             form: {
 
-                loading: false,
+                processing: false,
 
                 errors: {},
 
@@ -214,20 +205,20 @@ export default {
                     applicant_additional_info: "",
 
                     beneficiary_legal_status_id: 2,
+                    beneficiary_phone: "",
+                    beneficiary_additional_phone: "",
                     beneficiary_actual_address: "",
                     beneficiary_juridical_address: "",
 
                     beneficiary_firstname: "",
                     beneficiary_lastname: "",
                     beneficiary_pid: "",
-                    beneficiary_gender: 0,
+                    beneficiary_gender: "",
 
-                    beneficiary_juridical_status_id: 0,
+                    beneficiary_juridical_status_id: "",
                     beneficiary_company_name: "",
                     identifier: "",
                     beneficiary_company_director: "",
-                    beneficiary_company_phone: "",
-                    beneficiary_company_additional_phone: ""
 
                 },
 
@@ -240,6 +231,8 @@ export default {
                     applicant_additional_info: { error: [] },
 
                     beneficiary_legal_status_id: { error: [] },
+                    beneficiary_phone: { error: [] },
+                    beneficiary_additional_phone: { error: [] },
                     beneficiary_actual_address: { error: [] },
                     beneficiary_juridical_address: { error: [] },
 
@@ -251,26 +244,11 @@ export default {
                     beneficiary_juridical_status_id: { error: [] },
                     beneficiary_company_name: { error: [] },
                     identifier: { error: [] },
-                    beneficiary_company_director: { error: [] },
-                    beneficiary_company_phone: { error: [] },
-                    beneficiary_company_additional_phone: { error: [] }
+                    beneficiary_company_director: { error: [] }
 
                 },
 
-                data: {
-                    
-                    project: {
-
-                        project_types: []
-
-                    },
-                    
-                    currency: [],
-                    genders: [],
-                    juridical_status: [],
-                    legal_status: []
-
-                },
+                data: {},
 
                 params: {
 
@@ -283,7 +261,33 @@ export default {
         }
     },
 
-    components: { Errors, Success },
+    computed: {
+
+        ...mapState({
+            
+            ready(state) {
+
+                return state.ready && this.DynamicForm
+
+            },
+            
+            calculated(state) {
+                
+                return state.calculated
+
+            },
+
+            dynamic(state) {
+                
+                return state.form
+
+            }
+
+        }),
+
+        ...mapGetters([ 'roles' ])
+
+    },
 
     watch: {
 
@@ -314,7 +318,7 @@ export default {
 
             }
 
-            axios.put("/application/edit/" + this.$route.query.application, { ...this.form.inputs, ...this.dynamic.inputs }).then(response => {
+            axios.put("/application/edit/" + this.$route.query.id, { ...this.form.inputs, ...this.dynamic.inputs }).then(response => {
 
                 this.success = response.data.message
 
@@ -338,7 +342,7 @@ export default {
 
         },
 
-        setJuridicalStatus(e) {
+        set(e) {
 
             const is_legal = Number(this.form.data.legal_status.find((item) => item.id == e.target.value).is_legal)
 
@@ -347,14 +351,12 @@ export default {
                 this.form.inputs.beneficiary_firstname = "";
                 this.form.inputs.beneficiary_lastname = "";
                 this.form.inputs.beneficiary_pid = "";
-                this.form.inputs.beneficiary_gender = 0;
+                this.form.inputs.beneficiary_gender = "";
 
-                this.form.inputs.beneficiary_juridical_status_id = 0,
+                this.form.inputs.beneficiary_juridical_status_id = "",
                 this.form.inputs.beneficiary_company_name = "";
                 this.form.inputs.identifier = "";
                 this.form.inputs.beneficiary_company_director = "";
-                this.form.inputs.beneficiary_company_phone = "";
-                this.form.inputs.beneficiary_company_additional_phone = "";
 
             }
 
@@ -364,17 +366,23 @@ export default {
 
         download() {
 
-            axios.post("/application/download", { id: this.application.id }).then(response => {
+            this.form.processing = true
+
+            axios.get("/application/download/"+this.application.id).then(response => {
 
                 const url = document.createElement('a')
 
-                url.href = 'data:'+response.data.file.mime+';base64,'+response.data.file.data
+                url.href = response.data.file
 
-                url.download = response.data.file.name
+                url.download = this.application.application_uid + '.pdf'
                 
                 url.click()
 
+                this.form.processing = false
+
             }).catch(error => {
+
+                this.form.processing = false
 
                 console.log(error)
 
@@ -384,23 +392,9 @@ export default {
 
     },
 
-    computed : {
-
-        ...mapState({
-            
-            calculated: state => state.calculated,
-
-            dynamic: state => state.form
-            
-        }),
-
-        ...mapGetters([ 'roles' ])
-
-    },
-
     async mounted() {
 
-        this.application = await axios.get("/application/get/"+this.$route.query.application).then(response => {
+        this.application = await axios.get("/application/get/"+this.$route.query.id).then(response => {
 
             return response.data
 
@@ -410,13 +404,9 @@ export default {
 
         })
 
-        axios.post("/settings/project", { name: this.application.project.project_name }).then(response => {
+        axios.post("/settings/collector", { params: { name: this.application.project.project_name }, data: ['project', 'currency', 'genders', 'juridical_status', 'legal_status'] }).then(response => {
 
-            this.form.data.project = response.data.project;
-            this.form.data.currency = response.data.currency;
-            this.form.data.genders = response.data.genders;
-            this.form.data.juridical_status = response.data.juridical_status;
-            this.form.data.legal_status = response.data.legal_status;
+            this.form.data = response.data;
 
             const DynamicForm = markRaw(defineAsyncComponent(() => import('../project/' + this.application.project.project_name + '/form.vue')))
 

@@ -10,7 +10,7 @@ const routes = [
         children: [
             {
                 path: '/:name',
-                query: { popup: Boolean, id: Number, tab: Number },
+                query: { popup: Boolean, id: Number, tab: Number, token: String },
                 component: () => import('../components/static/popup.vue')
             }
         ]
@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
     
     if(user) {
 
-        if(['/signin', '/recovery', '/signup'].includes(to.path)) {
+        if(['/signin', '/recovery', '/signup', '/verify'].includes(to.path)) {
 
             return next({ path: '/dashboard' })
 
@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
 
         } else {
 
-            if(['/signin', '/recovery', '/signup'].includes(to.path)) {
+            if(['/signin', '/recovery', '/signup', '/verify'].includes(to.path)) {
 
                 return next()
 

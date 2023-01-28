@@ -1,6 +1,24 @@
 @charset "UTF-8"; @import "./variables.scss"; html, body {
-    background-color: $bg;
+    background-color: #f5f5f5;
     font-family: "frutiger_light";
+    height: 100vh;
+    background: url('~@/assets/images/rda-logo-t.png') 75% top;
+    background-repeat: no-repeat;
+    background-size: 1000px;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body:before {
+    content: "";
+    position: fixed;
+    background: #ffffffe0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 
 .slide-fade-enter-active {
@@ -28,8 +46,12 @@ h6 {
     font-family: frutiger_bold_caps;
 }
 
+.app-page-uid .btn span {
+    margin: 0 0 0 5px;
+}
+
 .app-read-form .form-input input, .app-read-form .form-input select, .app-read-form .form-input textarea {
-    background: transparent;
+    background: transparent!important;
     border: none;
     padding: 0 0 5px 0;
     border-radius: 0;
@@ -63,6 +85,12 @@ h6 {
 .app-form .form-input input, .app-form .form-input select, .app-form .form-input textarea {
     font-size: 14px;
     line-height: 24px;
+    transition: all .3s;
+    background-color: #ffffffc2;
+}
+
+.app-form .form-input input:disabled, .app-form .form-input select:disabled, .app-form .form-input textarea:disabled {
+    background-color: var(--bs-form-control-disabled-bg);
 }
 
 .app-tab-form .form-messages {
@@ -149,7 +177,7 @@ h6 {
     min-width: 700px;
     max-width: 700px;
     max-height: 80vh;
-    background: white;
+    background: #fff;
     display: table;
     vertical-align: middle;
     margin: 100px auto;
@@ -157,14 +185,11 @@ h6 {
     padding: 30px;
     position: relative;
     overflow: hidden;
+    min-height: 85px;
 }
 
 .app-table-uid {
     font-size: 14px;
-}
-
-footer {
-    border-top: 1px solid #f7f7f7;
 }
 
 .app-sign-form .form-input[data-error="true"] input,
@@ -243,8 +268,8 @@ footer {
     font-size: 14px;
 }
 
-.card {
-    border: none;
+.cards .card {
+    border: 1px solid #eee;
     box-shadow: 0 0 30px #00000012;
 }
 
@@ -281,13 +306,13 @@ footer {
 }
 
 .loading {
-    width: 100%;
+    width: 50%;
     height: 1px;
-    position: absolute;
+    position: relative;
     overflow: hidden;
-    z-index: 1;
-    left: 0;
-    top: 100%;
+    background-color: #ddd;
+    margin: 100px auto;
+    border-radius: 20px;
 }
 
 .loading:before {
@@ -296,12 +321,17 @@ footer {
     left: -50%;
     height: 1px;
     width: 40%;
-    background: linear-gradient(45deg, transparent, #82bd00, transparent);
-    animation: loading 1.2s linear infinite;
+    background-color: #70ae02;
+    animation: loading 1s linear infinite;
+    border-radius: 20px;
 }
 
-body {
-    height: 100vh;
+.app-loading-container {
+    position: relative;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #app {
@@ -313,12 +343,10 @@ body {
     0% {
         left: -40%;
     }
-
     50% {
         left: 20%;
         width: 80%;
     }
-
     100% {
         left: 100%;
         width: 100%;
@@ -330,11 +358,25 @@ aside {
 }
 
 header {
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
     position: relative;
-    background: #f7f7f7;
-    border-bottom: 1px solid #dddddd9e;
+    background: #f7f7f7c9;
     user-select: none;
+    margin: 0 0 50px 0;
+}
+
+header:after {
+    content: "";
+    width: 100%;
+    height: 50px;
+    background: #f7f7f7c9;
+    position: absolute;
+    top: calc(100% - 25px);
+    z-index: -1;
+    margin: 0 auto;
+    left: 0;
+    border-radius: 100%;
+    border-bottom: 1px solid #dbdbdbc7;
 }
 
 header h3 {
@@ -522,7 +564,8 @@ table tr:last-child td {
     position: absolute;
     top: 0;
     left: 0;
-    background: #ffffff;
+    background: linear-gradient(180deg, #f9f9f9, #fff);
+    color: #000;
     width: 100%;
     height: 100%;
     display: flex;
@@ -571,6 +614,8 @@ table tr:last-child td {
 
 .form-control[type="file"] {
     position: relative;
+    overflow: hidden;
+    margin: 0 0 20px 0;
 }
 
 .app-uploaded-documents {
@@ -622,7 +667,7 @@ table tr:last-child td {
 }
 
 .form-file-input .form-messages {
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
 }
 
 .form-file-input .form-messages .alert:first-child:last-child {
@@ -685,6 +730,29 @@ table tr:last-child td {
     position: absolute;
     top: calc(100% + 5px);
     left: 0;
+}
+
+#profile-nav span:last-child {
+    position: absolute;
+    font-size: 13px;
+    bottom: calc(100% - 5px);
+    right: 27px;
+}
+
+#profile-nav {
+    position: relative;
+    top: 13px;
+}
+
+#profile-nav span:first-child {
+    color: black;
+    font-family: 'frutiger_light_caps';
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#profile-nav + .dropdown-menu {
+    top: calc(100% + 13px);
 }
 
 .form-item .btn[disabled="true"] {
@@ -800,6 +868,7 @@ table tr:last-child td {
 .app-sign-form a {
     font-family: 'frutiger_light';
     font-size: 16px;
+    color: #058705;
 }
 
 .app-form-info a {
@@ -837,11 +906,15 @@ header nav ul {
     margin-left: 10px;
 }
 
-header nav ul li a.nav-link-lined:hover {
+header nav ul li a.nav-link-lined:hover, header nav ul li a.nav-link-lined.router-link-active {
     color: #63a205;
 }
 
-header nav ul li a.nav-link-lined:after {
+.app-container {
+    padding: 0;
+}
+
+header nav ul li a.nav-link-lined:after, header nav ul li a.router-link-active:after {
     content: "";
     position: absolute;
     top: 100%;
@@ -852,7 +925,7 @@ header nav ul li a.nav-link-lined:after {
     transition: all .3s ease-in-out;
 }
 
-header nav ul li a.nav-link-lined:hover:after {
+header nav ul li a.nav-link-lined:hover:after, header nav ul li a.router-link-active:after {
     content: "";
     width: 50px;
 }
@@ -863,7 +936,7 @@ header nav ul li a.nav-link-lined {
     text-decoration: none;
     color: #4a4a4a;
     position: relative;
-    font-size: 14px;
+    font-size: 16px;
     margin: 10px;
     transition: all .3s;
 }
@@ -878,8 +951,11 @@ header nav ul li a.nav-link-lined:focus {
     box-shadow: 11px 10px 50px #0000000f;
 }
 
-.dropdown-menu li:last-child a {
+.dropdown-menu li:last-child:hover span, .dropdown-menu li:last-child:active span {
     border: none;
+    background-color: #ff000017;
+    color: #891f1f;
+    cursor: pointer;
 }
 
 .dropdown-item.text-danger:active {
@@ -892,6 +968,7 @@ header nav ul li a.nav-link-lined:focus {
     text-align: right;
     padding: 8px 13px;
     border-radius: 6px;
+    transition: all .3s;
 }
 
 .dropdown-item svg {
@@ -934,16 +1011,34 @@ header .container {
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 14px;
+}
+
+footer span {
+    color: #9b9b9b;
+    font-size: 14px;
 }
 
 .app-sign-form form {
     width: 650px;
     padding: 30px 30px 0 30px;
+    border: 1px solid #dee2e6;
 }
 
 .app-form-buttons {
     display: flex;
     align-items: center;
+}
+
+.app-sign-form input,
+.app-sign-form select {
+    font-size: 14px;
+    transition: all .3s;
+}
+
+.app-sign-form label {
+    font-family: 'frutiger_bold_caps';
+    font-size: 14px;
 }
 
 .app-page-uid span svg {
@@ -954,8 +1049,8 @@ header .container {
     margin-left: 20px;
 }
 
-main {
-    min-height: 400px;
+button .spinner-border {
+    margin: 0 5px 0 0;
 }
 
 .app-page-uid {
@@ -971,15 +1066,17 @@ main {
     font-size: 18px;
 }
 
-.app-sign-form .card {
-    box-shadow: none;
-    border: 1px solid #e7e7e7;
-}
-
 .app-sign-form .btn {
     font-family: 'frutiger_bold_caps';
 }
 
 .app-sign-form .form-messages {
     margin-bottom: 15px;
+}
+
+footer {
+    padding: 30px 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

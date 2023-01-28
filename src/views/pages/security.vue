@@ -1,10 +1,16 @@
 <template>
 
+    <div class="loading" v-if="!ready"></div>
+
     <Transition name="fade" appear>
 
-        <aside>
+        <aside v-if="ready">
 
-            <div class="app-page-title">{{ title }}</div>
+            <div class="app-table-buttons">
+
+                <div class="app-page-title">{{ title }}</div>
+
+            </div>
 
             <div class="app-form">
                 
@@ -14,7 +20,7 @@
 
                         <div class="form-input col-12 mb-3" :data-error="!!form.state.current_password.error.length">
                             <label for="current_password" class="mb-2">მიმდინარე პეროლი</label>
-                            <input type="password" class="form-control" name="old_password" v-model="form.inputs.current_password" id="current_password" placeholder="მიმდინარე პაროლი">
+                            <input type="password" class="form-control" name="old_password" v-model="form.inputs.current_password" id="current_password" placeholder="მიმდინარე პაროლი" :disabled="form.processing">
                         </div>
 
                     </div>
@@ -23,18 +29,23 @@
 
                         <div class="form-input col-6 mb-3" :data-error="!!form.state.new_password.error.length">
                             <label for="new_password" class="mb-2">ახალი პაროლი</label>
-                            <input type="password" class="form-control" name="new_password" v-model="form.inputs.new_password" id="new_password" placeholder="ახალი პაროლი">
+                            <input type="password" class="form-control" name="new_password" v-model="form.inputs.new_password" id="new_password" placeholder="ახალი პაროლი" :disabled="form.processing">
                         </div>
 
                         <div class="form-input col-6 mb-3" :data-error="!!form.state.confirm_password.error.length">
                             <label for="confirm_password" class="mb-2">გაიმეორეთ ახალი პაროლი</label>
-                            <input type="password" class="form-control" name="confirm_password" v-model="form.inputs.confirm_password" id="confirm_password" placeholder="გაიმეორეთ ახალი პაროლი">
+                            <input type="password" class="form-control" name="confirm_password" v-model="form.inputs.confirm_password" id="confirm_password" placeholder="გაიმეორეთ ახალი პაროლი" :disabled="form.processing">
                         </div>
 
                     </div>
 
                     <div class="form-buttons mt-3 mb-4">
-                        <button type="submit" class="btn btn-success">პაროლის შეცვლა</button>
+                        
+                        <button type="submit" class="btn btn-success" :disabled="form.processing">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="form.processing"></span>
+                            პაროლის შეცვლა
+                        </button>
+
                     </div>
 
                     <Errors :errors="form.errors" v-if="Object.keys(form.errors).length"/>
@@ -52,7 +63,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import axios from "axios"
 
@@ -69,6 +80,8 @@ export default {
 
             form: {
                 
+                processing: false,
+
                 errors: {},
 
                 success: "",
@@ -95,19 +108,35 @@ export default {
 
     },
 
+    computed: {
+
+        ...mapState({
+
+            ready(state) {
+
+                return state.ready
+
+            }
+
+        })
+
+    },
+
     components: { Errors, Success },
 
     methods: {
 
-        ...mapActions([ 'load' ]),
-
         submit() {
+
+            this.form.processing = true
 
             axios.put("/password/change", this.form.inputs).then(response => {
 
                 this.form.errors = {}
 
                 this.form.success = response.data.message
+
+                this.form.processing = false
 
             }).catch(error => {
 
@@ -125,30 +154,12 @@ export default {
 
                 }
 
+                this.form.processing = false
+
             })
 
         }
 
-    },
-
-    mounted() {
-
-        document.title = this.title
-    
-        const user = JSON.parse(localStorage.getItem("user"));
-
-        axios.get("/user/get/" + user.id).then(response => {
-
-            this.user = response.data;
-
-            this.load('finish')
-
-        }).catch(error => {
-
-            console.log(error)
-
-        });
-        
     }
 
 }
